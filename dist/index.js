@@ -26087,7 +26087,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.importCertToKeychain = exports.createKeychain = exports.importCertFromSecret = exports.createVariable = exports.installCertification = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
-const child_process_1 = __nccwpck_require__(2081);
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
     log_ultis_1.Log.info('Install certification');
@@ -26119,8 +26118,10 @@ exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
     const { runnerTemp, certificatePath } = data;
     log_ultis_1.Log.info('Import Certificate From Secret');
-    (0, child_process_1.exec)(`echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`);
-    (0, child_process_1.exec)(`base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`);
+    const a = await exec.getExecOutput(`echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`);
+    log_ultis_1.Log.info(`a: ${a}`);
+    const b = await exec.getExecOutput(`base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`);
+    log_ultis_1.Log.info(`b: ${b}`);
     // await exec.exec(
     //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
     // )
