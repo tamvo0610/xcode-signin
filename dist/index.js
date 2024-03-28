@@ -26884,7 +26884,7 @@ const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
     console.log(`Current Action Path: ${__dirname}`);
     log_ultis_1.Log.info('Install certification');
-    const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd();
+    const runnerTemp = process.cwd();
     log_ultis_1.Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`);
     log_ultis_1.Log.info(`runnerTemp ${runnerTemp}`);
     const variable = (0, exports.createVariable)(inputs, runnerTemp);
