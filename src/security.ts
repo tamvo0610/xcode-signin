@@ -1,10 +1,5 @@
-import path from 'path'
 import * as exec from '@actions/exec'
-import * as tmp from 'tmp'
-import * as core from '@actions/core'
-import * as fs from 'fs'
-import { ExecOptions } from '@actions/exec/lib/interfaces'
-import { exec as execCP } from 'child_process'
+import path from 'path'
 import { Log } from './utils/log.ultis'
 
 interface VariableData {
@@ -26,6 +21,8 @@ export async function installCertification(inputs: InputsData) {
   Log.info(`RUNNER_TEMP ${RUNNER_TEMP}`)
   const variable = createVariable(inputs, RUNNER_TEMP)
   await createKeychain(variable, inputs)
+  await setKeychainSettings(variable)
+  await unlockKeychain(variable, inputs)
   // await importCertFromSecret(variable, inputs)
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
@@ -34,7 +31,7 @@ export async function installCertification(inputs: InputsData) {
 export const createVariable = (inputs: InputsData, runnerTemp: string) => {
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
-  const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
+  const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain')
   return {
     runnerTemp: runnerTemp,
     certificatePath: CERTIFICATE_PATH,
@@ -61,15 +58,26 @@ export const createKeychain = async (
   data: VariableData,
   inputs: InputsData
 ) => {
-  Log.info('Create Keychain')
   const { keychainPath } = data
-  await exec.exec(
-    `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  )
-  await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-  await exec.exec(
-    `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  )
+  const { keychainPassword } = inputs
+  Log.info('Create Keychain')
+  const args = ['create-keychain', '-p', keychainPassword, keychainPath]
+  await exec.exec('security', args)
+}
+
+const setKeychainSettings = async (data: VariableData) => {
+  const { keychainPath } = data
+  Log.info('Set Keychain Settings')
+  const args = ['set-keychain-settings', '-lut', '21600', keychainPath]
+  await exec.exec('security', args)
+}
+
+const unlockKeychain = async (data: VariableData, inputs: InputsData) => {
+  const { keychainPath } = data
+  const { keychainPassword } = inputs
+  Log.info('Unlock Keychain')
+  const args = ['unlock-keychain', '-p', keychainPassword, keychainPath]
+  await exec.exec('security', args)
 }
 
 export const importCertToKeychain = async (

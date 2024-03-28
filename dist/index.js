@@ -26085,14 +26085,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.importCertToKeychain = exports.createKeychain = exports.importCertFromSecret = exports.createVariable = exports.installCertification = void 0;
-const path_1 = __importDefault(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
+const path_1 = __importDefault(__nccwpck_require__(1017));
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
     const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd();
     log_ultis_1.Log.info(`RUNNER_TEMP ${RUNNER_TEMP}`);
     const variable = (0, exports.createVariable)(inputs, RUNNER_TEMP);
     await (0, exports.createKeychain)(variable, inputs);
+    await setKeychainSettings(variable);
+    await unlockKeychain(variable, inputs);
     // await importCertFromSecret(variable, inputs)
     // await importCertToKeychain(variable, inputs)
     // await apllyProvision(variable)
@@ -26101,7 +26103,7 @@ exports.installCertification = installCertification;
 const createVariable = (inputs, runnerTemp) => {
     const CERTIFICATE_PATH = path_1.default.join(runnerTemp, 'build_certificate.p12');
     const PP_PATH = path_1.default.join(runnerTemp, 'build_pp.mobileprovision');
-    const KEYCHAIN_PATH = path_1.default.join(runnerTemp, 'app-signing.keychain-db');
+    const KEYCHAIN_PATH = path_1.default.join(runnerTemp, 'app-signing.keychain');
     return {
         runnerTemp: runnerTemp,
         certificatePath: CERTIFICATE_PATH,
@@ -26118,13 +26120,26 @@ const importCertFromSecret = async (data, inputs) => {
 };
 exports.importCertFromSecret = importCertFromSecret;
 const createKeychain = async (data, inputs) => {
-    log_ultis_1.Log.info('Create Keychain');
     const { keychainPath } = data;
-    await exec.exec(`security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
-    await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`);
-    await exec.exec(`security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
+    const { keychainPassword } = inputs;
+    log_ultis_1.Log.info('Create Keychain');
+    const args = ['create-keychain', '-p', keychainPassword, keychainPath];
+    await exec.exec('security', args);
 };
 exports.createKeychain = createKeychain;
+const setKeychainSettings = async (data) => {
+    const { keychainPath } = data;
+    log_ultis_1.Log.info('Set Keychain Settings');
+    const args = ['set-keychain-settings', '-lut', '21600', keychainPath];
+    await exec.exec('security', args);
+};
+const unlockKeychain = async (data, inputs) => {
+    const { keychainPath } = data;
+    const { keychainPassword } = inputs;
+    log_ultis_1.Log.info('Unlock Keychain');
+    const args = ['unlock-keychain', '-p', keychainPassword, keychainPath];
+    await exec.exec('security', args);
+};
 const importCertToKeychain = async (data, inputs) => {
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
