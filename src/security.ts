@@ -49,12 +49,16 @@ export const importCertFromSecret = async (
   inputs: InputsData
 ) => {
   Log.info('Import Certificate From Secret')
+  await exec.exec(`echo ${inputs.certificateBase64} >> certificate.base64`)
   await exec.exec(
-    `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+    `base64 --decode -i certificate.base64 -o ${data.certificatePath}`
   )
-  await exec.exec(
-    `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-  )
+  // await exec.exec(
+  //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+  // )
+  // await exec.exec(
+  //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
+  // )
 }
 
 export const createKeychain = async (
