@@ -1,6 +1,7 @@
 import path from 'path'
 import * as exec from '@actions/exec'
 import * as core from '@actions/core'
+import * as fs from 'fs'
 import { ExecOptions } from '@actions/exec/lib/interfaces'
 import { Log } from './utils/log.ultis'
 
@@ -34,6 +35,9 @@ export async function installCertification(inputs: InputsData) {
 
 export const createVariable = (runnerTemp: string) => {
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
+  if (!fs.existsSync(CERTIFICATE_PATH)) {
+    fs.mkdirSync(CERTIFICATE_PATH, { recursive: true })
+  }
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
   return {
