@@ -20,6 +20,7 @@ interface InputsData {
 export async function installCertification(inputs: InputsData) {
   Log.info('Install certification')
   const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd()
+  Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`)
   Log.info(`runnerTemp ${runnerTemp}`)
   const variable = createVariable(runnerTemp)
   Log.info(`CertificatePath ${variable.certificatePath}`)
