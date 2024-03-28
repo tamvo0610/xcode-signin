@@ -1,5 +1,6 @@
 import path from 'path'
 import * as exec from '@actions/exec'
+import * as tmp from 'tmp'
 import * as core from '@actions/core'
 import * as fs from 'fs'
 import { ExecOptions } from '@actions/exec/lib/interfaces'
@@ -25,7 +26,7 @@ export async function installCertification(inputs: InputsData) {
   const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd()
   Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`)
   Log.info(`runnerTemp ${runnerTemp}`)
-  const variable = createVariable(runnerTemp)
+  const variable = createVariable(inputs, runnerTemp)
   Log.info(`CertificatePath ${variable.certificatePath}`)
   Log.info(`PPPath ${variable.ppPath}`)
   Log.info(`KeychainPath ${variable.keychainPath}`)
@@ -35,7 +36,12 @@ export async function installCertification(inputs: InputsData) {
   // await apllyProvision(variable)
 }
 
-export const createVariable = (runnerTemp: string) => {
+export const createVariable = (inputs: InputsData, runnerTemp: string) => {
+  const buffer = Buffer.from(inputs.certificateBase64, 'base64')
+  const tempFile = tmp.fileSync()
+  const q = tempFile.name
+  fs.writeFileSync(q, buffer)
+
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
