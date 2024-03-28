@@ -38,10 +38,7 @@ export async function installCertification(inputs: InputsData) {
 }
 
 export const createVariable = (inputs: InputsData, runnerTemp: string) => {
-  const buffer = Buffer.from(inputs.certificateBase64, 'base64')
-  const tempFile = tmp.fileSync()
-  const q = tempFile.name
-  fs.writeFileSync(q, buffer)
+  // const buffer = Buffer.from(inputnpm
 
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
