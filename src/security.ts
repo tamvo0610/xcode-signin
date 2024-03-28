@@ -1,5 +1,5 @@
 import path from 'path'
-import * as exec from './utils/exec.utils'
+import * as exec from '@actions/exec'
 import * as tmp from 'tmp'
 import * as core from '@actions/core'
 import * as fs from 'fs'
@@ -61,12 +61,12 @@ export const importCertFromSecret = async (
   const { runnerTemp, certificatePath } = data
   const outputFilename = `${runnerTemp}/build_certificate.p12`
   Log.info('Import Certificate From Secret')
-  await exec.run(
-    `echo -n "SGVsbG8gd29ybGQ" | base64 --decode -o ${outputFilename}`
-  )
-  // await exec.exec(
-  //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+  // await exec.run(
+  //   `echo -n "SGVsbG8gd29ybGQ" | base64 --decode -o ${outputFilename}`
   // )
+  await exec.exec(
+    `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+  )
   // await exec.exec(
   //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
   // )
