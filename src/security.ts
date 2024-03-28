@@ -1,5 +1,5 @@
 import path from 'path'
-import * as exec from '@actions/exec'
+import * as exec from './utils/exec.utils'
 import * as tmp from 'tmp'
 import * as core from '@actions/core'
 import * as fs from 'fs'
@@ -59,16 +59,14 @@ export const importCertFromSecret = async (
   inputs: InputsData
 ) => {
   const { runnerTemp, certificatePath } = data
-  const base64String = 'SGVsbG8gd29ybGQ=' // Replace with your base64 string
   const outputFilename = `${runnerTemp}/build_certificate.p12`
-
-  const buffer = Buffer.from(base64String, 'base64')
-  fs.writeFileSync(outputFilename, buffer)
   Log.info('Import Certificate From Secret')
-  await exec.exec('chmod 777', [runnerTemp])
-  await exec.exec(
-    `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+  await exec.run(
+    `echo -n "SGVsbG8gd29ybGQ" | base64 --decode -o ${outputFilename}`
   )
+  // await exec.exec(
+  //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+  // )
   // await exec.exec(
   //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
   // )
@@ -80,13 +78,13 @@ export const createKeychain = async (
 ) => {
   Log.info('Create Keychain')
   const { keychainPath } = data
-  await exec.exec(
-    `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  )
-  await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-  await exec.exec(
-    `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  )
+  // await exec.exec(
+  //   `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
+  // )
+  // await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
+  // await exec.exec(
+  //   `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
+  // )
 }
 
 export const importCertToKeychain = async (
@@ -95,19 +93,19 @@ export const importCertToKeychain = async (
 ) => {
   const { keychainPath, certificatePath } = data
   const { keychainPassword, p12Password } = inputs
-  await exec.exec(
-    `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
-  )
-  await exec.exec(
-    `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
-  )
-  await exec.exec(`security list-keychain -d user -s ${keychainPath}`)
+  // await exec.exec(
+  //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
+  // )
+  // await exec.exec(
+  //   `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
+  // )
+  // await exec.exec(`security list-keychain -d user -s ${keychainPath}`)
 }
 
 export const apllyProvision = async (data: VariableData) => {
   const { ppPath } = data
-  await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
-  await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`)
+  // await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
+  // await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`)
 }
 
 export const cleanKeychainAndProvision = () => {
