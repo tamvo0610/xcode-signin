@@ -23,6 +23,10 @@ export async function installCertification(inputs: InputsData) {
   Log.info(`CertificatePath ${variable.certificatePath}`)
   Log.info(`PPPath ${variable.ppPath}`)
   Log.info(`KeychainPath ${variable.keychainPath}`)
+  await importCertFromSecret(variable, inputs)
+  await createKeychain(variable, inputs)
+  await importCertToKeychain(variable, inputs)
+  await apllyProvision(variable)
 }
 
 export const createVariable = (runnerTemp: string) => {
@@ -62,19 +66,25 @@ export const createKeychain = async (
   )
 }
 
-export const importCertToKeychain = async (data: VariableData) => {
+export const importCertToKeychain = async (
+  data: VariableData,
+  inputs: InputsData
+) => {
+  const { keychainPath, certificatePath } = data
+  const { keychainPassword, p12Password } = inputs
   await exec.exec(
-    `security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH`
+    `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
   )
   await exec.exec(
-    'security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH'
+    `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
   )
-  await exec.exec('security list-keychain -d user -s $KEYCHAIN_PATH')
+  await exec.exec(`security list-keychain -d user -s ${keychainPath}`)
 }
 
-export const apllyProvision = () => {
-  // mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-  //       cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+export const apllyProvision = async (data: VariableData) => {
+  const { ppPath } = data
+  await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
+  await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`)
 }
 
 export const cleanKeychainAndProvision = () => {

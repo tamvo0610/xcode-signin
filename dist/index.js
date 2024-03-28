@@ -26095,6 +26095,10 @@ async function installCertification(inputs) {
     log_ultis_1.Log.info(`CertificatePath ${variable.certificatePath}`);
     log_ultis_1.Log.info(`PPPath ${variable.ppPath}`);
     log_ultis_1.Log.info(`KeychainPath ${variable.keychainPath}`);
+    await (0, exports.importCertFromSecret)(variable, inputs);
+    await (0, exports.createKeychain)(variable, inputs);
+    await (0, exports.importCertToKeychain)(variable, inputs);
+    await (0, exports.apllyProvision)(variable);
 }
 exports.installCertification = installCertification;
 const createVariable = (runnerTemp) => {
@@ -26120,15 +26124,18 @@ const createKeychain = async (data, inputs) => {
     await exec.exec(`security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
 };
 exports.createKeychain = createKeychain;
-const importCertToKeychain = async (data) => {
-    await exec.exec(`security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH`);
-    await exec.exec('security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH');
-    await exec.exec('security list-keychain -d user -s $KEYCHAIN_PATH');
+const importCertToKeychain = async (data, inputs) => {
+    const { keychainPath, certificatePath } = data;
+    const { keychainPassword, p12Password } = inputs;
+    await exec.exec(`security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`);
+    await exec.exec(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
+    await exec.exec(`security list-keychain -d user -s ${keychainPath}`);
 };
 exports.importCertToKeychain = importCertToKeychain;
-const apllyProvision = () => {
-    // mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-    //       cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+const apllyProvision = async (data) => {
+    const { ppPath } = data;
+    await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles');
+    await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`);
 };
 exports.apllyProvision = apllyProvision;
 const cleanKeychainAndProvision = () => {
