@@ -22,7 +22,6 @@ interface InputsData {
 }
 
 export async function installCertification(inputs: InputsData) {
-  console.log(`Current Action Path: ${__dirname}`)
   Log.info('Install certification')
   const runnerTemp = process.cwd()
   Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`)
@@ -38,8 +37,6 @@ export async function installCertification(inputs: InputsData) {
 }
 
 export const createVariable = (inputs: InputsData, runnerTemp: string) => {
-  // const buffer = Buffer.from(inputnpm
-
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
@@ -56,17 +53,13 @@ export const importCertFromSecret = async (
   inputs: InputsData
 ) => {
   const { runnerTemp, certificatePath } = data
-  const outputFilename = `${runnerTemp}/build_certificate.p12`
   Log.info('Import Certificate From Secret')
-  // await exec.run(
-  //   `echo -n "SGVsbG8gd29ybGQ" | base64 --decode -o ${outputFilename}`
-  // )
   await exec.exec(
     `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
   )
-  // await exec.exec(
-  //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-  // )
+  await exec.exec(
+    `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
+  )
 }
 
 export const createKeychain = async (

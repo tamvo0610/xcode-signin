@@ -26089,7 +26089,6 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
-    console.log(`Current Action Path: ${__dirname}`);
     log_ultis_1.Log.info('Install certification');
     const runnerTemp = process.cwd();
     log_ultis_1.Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`);
@@ -26105,7 +26104,6 @@ async function installCertification(inputs) {
 }
 exports.installCertification = installCertification;
 const createVariable = (inputs, runnerTemp) => {
-    // const buffer = Buffer.from(inputnpm
     const CERTIFICATE_PATH = path_1.default.join(runnerTemp, 'build_certificate.p12');
     const PP_PATH = path_1.default.join(runnerTemp, 'build_pp.mobileprovision');
     const KEYCHAIN_PATH = path_1.default.join(runnerTemp, 'app-signing.keychain-db');
@@ -26119,15 +26117,9 @@ const createVariable = (inputs, runnerTemp) => {
 exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
     const { runnerTemp, certificatePath } = data;
-    const outputFilename = `${runnerTemp}/build_certificate.p12`;
     log_ultis_1.Log.info('Import Certificate From Secret');
-    // await exec.run(
-    //   `echo -n "SGVsbG8gd29ybGQ" | base64 --decode -o ${outputFilename}`
-    // )
     await exec.exec(`echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`);
-    // await exec.exec(
-    //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-    // )
+    await exec.exec(`echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`);
 };
 exports.importCertFromSecret = importCertFromSecret;
 const createKeychain = async (data, inputs) => {
