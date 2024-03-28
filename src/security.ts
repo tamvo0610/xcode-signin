@@ -57,10 +57,14 @@ export const createKeychain = async (
   )
 }
 
-export const importCertToKeychain = (data: VariableData) => {
-  // security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-  //       security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-  //       security list-keychain -d user -s $KEYCHAIN_PATH
+export const importCertToKeychain = async (data: VariableData) => {
+  await exec.exec(
+    `security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH`
+  )
+  await exec.exec(
+    'security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH'
+  )
+  await exec.exec('security list-keychain -d user -s $KEYCHAIN_PATH')
 }
 
 export const apllyProvision = () => {
