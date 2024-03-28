@@ -6,6 +6,7 @@ import { ExecOptions } from '@actions/exec/lib/interfaces'
 import { Log } from './utils/log.ultis'
 
 interface VariableData {
+  runnerTemp: string
   certificatePath: string
   ppPath: string
   keychainPath: string
@@ -38,6 +39,7 @@ export const createVariable = (runnerTemp: string) => {
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
   return {
+    runnerTemp: runnerTemp,
     certificatePath: CERTIFICATE_PATH,
     ppPath: PP_PATH,
     keychainPath: KEYCHAIN_PATH
@@ -48,10 +50,13 @@ export const importCertFromSecret = async (
   data: VariableData,
   inputs: InputsData
 ) => {
+  const { runnerTemp, certificatePath } = data
   Log.info('Import Certificate From Secret')
-  await exec.exec(`echo ${inputs.certificateBase64} >> certificate.base64`)
   await exec.exec(
-    `base64 --decode -i certificate.base64 -o ${data.certificatePath}`
+    `echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`
+  )
+  await exec.exec(
+    `base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`
   )
   // await exec.exec(
   //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`

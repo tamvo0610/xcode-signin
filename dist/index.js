@@ -26108,6 +26108,7 @@ const createVariable = (runnerTemp) => {
     const PP_PATH = path_1.default.join(runnerTemp, 'build_pp.mobileprovision');
     const KEYCHAIN_PATH = path_1.default.join(runnerTemp, 'app-signing.keychain-db');
     return {
+        runnerTemp: runnerTemp,
         certificatePath: CERTIFICATE_PATH,
         ppPath: PP_PATH,
         keychainPath: KEYCHAIN_PATH
@@ -26115,9 +26116,10 @@ const createVariable = (runnerTemp) => {
 };
 exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
+    const { runnerTemp, certificatePath } = data;
     log_ultis_1.Log.info('Import Certificate From Secret');
-    await exec.exec(`echo ${inputs.certificateBase64} >> certificate.base64`);
-    await exec.exec(`base64 --decode -i certificate.base64 -o ${data.certificatePath}`);
+    await exec.exec(`echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`);
+    await exec.exec(`base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`);
     // await exec.exec(
     //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
     // )
