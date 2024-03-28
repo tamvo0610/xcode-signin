@@ -26915,19 +26915,13 @@ const createVariable = (inputs, runnerTemp) => {
 exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
     const { runnerTemp, certificatePath } = data;
+    const base64String = 'SGVsbG8gd29ybGQ='; // Replace with your base64 string
+    const outputFilename = `${runnerTemp}/build_certificate.p12`;
+    const buffer = Buffer.from(base64String, 'base64');
+    fs.writeFileSync(outputFilename, buffer);
     log_ultis_1.Log.info('Import Certificate From Secret');
     await exec.exec('chmod 777', [runnerTemp]);
-    await exec.exec('bash', [
-        '-c',
-        'echo "SGVsbG8gd29ybGQ=" >> certificate.base64'
-    ]);
-    const a = await exec.getExecOutput(`echo ${'SGVsbG8gd29ybGQ='} >> ${runnerTemp}/certificate.base64`);
-    log_ultis_1.Log.info(`a: ${a}`);
-    const b = await exec.getExecOutput(`base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`);
-    log_ultis_1.Log.info(`b: ${b}`);
-    // await exec.exec(
-    //   `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
-    // )
+    await exec.exec(`echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`);
     // await exec.exec(
     //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
     // )
