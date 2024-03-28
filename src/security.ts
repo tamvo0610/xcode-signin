@@ -22,6 +22,7 @@ interface InputsData {
 }
 
 export async function installCertification(inputs: InputsData) {
+  console.log(`Current Action Path: ${__dirname}`)
   Log.info('Install certification')
   const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd()
   Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`)

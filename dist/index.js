@@ -26882,6 +26882,7 @@ const tmp = __importStar(__nccwpck_require__(8517));
 const fs = __importStar(__nccwpck_require__(7147));
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
+    console.log(`Current Action Path: ${__dirname}`);
     log_ultis_1.Log.info('Install certification');
     const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd();
     log_ultis_1.Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`);
