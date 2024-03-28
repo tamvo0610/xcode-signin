@@ -26091,6 +26091,7 @@ const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
     log_ultis_1.Log.info('Install certification');
     const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd();
+    log_ultis_1.Log.info(`runnerTemp ${runnerTemp}`);
     const variable = (0, exports.createVariable)(runnerTemp);
     log_ultis_1.Log.info(`CertificatePath ${variable.certificatePath}`);
     log_ultis_1.Log.info(`PPPath ${variable.ppPath}`);
@@ -26113,11 +26114,13 @@ const createVariable = (runnerTemp) => {
 };
 exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
+    log_ultis_1.Log.info('Import Certificate From Secret');
     await exec.exec(`echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`);
     await exec.exec(`echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`);
 };
 exports.importCertFromSecret = importCertFromSecret;
 const createKeychain = async (data, inputs) => {
+    log_ultis_1.Log.info('Create Keychain');
     const { keychainPath } = data;
     await exec.exec(`security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
     await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`);

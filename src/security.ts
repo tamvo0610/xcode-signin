@@ -1,5 +1,6 @@
 import path from 'path'
 import * as exec from '@actions/exec'
+import * as core from '@actions/core'
 import { ExecOptions } from '@actions/exec/lib/interfaces'
 import { Log } from './utils/log.ultis'
 
@@ -19,6 +20,7 @@ interface InputsData {
 export async function installCertification(inputs: InputsData) {
   Log.info('Install certification')
   const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd()
+  Log.info(`runnerTemp ${runnerTemp}`)
   const variable = createVariable(runnerTemp)
   Log.info(`CertificatePath ${variable.certificatePath}`)
   Log.info(`PPPath ${variable.ppPath}`)
@@ -44,6 +46,7 @@ export const importCertFromSecret = async (
   data: VariableData,
   inputs: InputsData
 ) => {
+  Log.info('Import Certificate From Secret')
   await exec.exec(
     `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
   )
@@ -56,6 +59,7 @@ export const createKeychain = async (
   data: VariableData,
   inputs: InputsData
 ) => {
+  Log.info('Create Keychain')
   const { keychainPath } = data
   await exec.exec(
     `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
