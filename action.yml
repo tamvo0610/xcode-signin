@@ -1,7 +1,6 @@
-name: 'Local Cache Self-Hosted'
+name: 'Xcode Sigin'
 description:
-  'Cache dependencies and build outputs to improve workflow execution time on
-  self hosted machine'
+  'Installing an Apple certificate on macOS runners for Xcode development'
 author: 'Tâm Võ'
 
 branding:
