@@ -1,6 +1,7 @@
 import path from 'path'
 import * as exec from '@actions/exec'
 import { ExecOptions } from '@actions/exec/lib/interfaces'
+import { Log } from './utils/log.ultis'
 
 interface VariableData {
   certificatePath: string
@@ -16,8 +17,12 @@ interface InputsData {
 }
 
 export async function installCertification(inputs: InputsData) {
+  Log.info('Install certification')
   const runnerTemp = process.env['RUNNER_TEMP'] || process.cwd()
   const variable = createVariable(runnerTemp)
+  Log.info(`CertificatePath ${variable.certificatePath}`)
+  Log.info(`PPPath ${variable.ppPath}`)
+  Log.info(`KeychainPath ${variable.keychainPath}`)
 }
 
 export const createVariable = (runnerTemp: string) => {
