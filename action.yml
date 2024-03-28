@@ -1,24 +1,33 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Local Cache Self-Hosted'
+description:
+  'Cache dependencies and build outputs to improve workflow execution time on
+  self hosted machine'
+author: 'Tâm Võ'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
+  icon: 'archive'
   color: 'red'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  BUILD_CERTIFICATE_BASE64:
+    description: 'Apple signing certificate file'
     required: true
-    default: '1000'
+  BUILD_PROVISION_PROFILE_BASE64:
+    description: 'Apple signing certificate profile'
+    required: false
+  P12_PASSWORD:
+    description: 'Apple signing certificate password'
+    required: true
+  KEYCHAIN_PASSWORD:
+    description: 'Keychain password'
+    required: true
 
-# Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  cache-hit:
+    description: 'A boolean value to indicate if cache was found and restored'
 
 runs:
   using: node20
   main: dist/index.js
+  # post: dist/save/index.js
+  post-if: success()
