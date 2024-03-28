@@ -26089,16 +26089,11 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
-    log_ultis_1.Log.info('Install certification');
-    const runnerTemp = process.cwd();
-    log_ultis_1.Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`);
-    log_ultis_1.Log.info(`runnerTemp ${runnerTemp}`);
-    const variable = (0, exports.createVariable)(inputs, runnerTemp);
-    log_ultis_1.Log.info(`CertificatePath ${variable.certificatePath}`);
-    log_ultis_1.Log.info(`PPPath ${variable.ppPath}`);
-    log_ultis_1.Log.info(`KeychainPath ${variable.keychainPath}`);
-    await (0, exports.importCertFromSecret)(variable, inputs);
-    // await createKeychain(variable, inputs)
+    const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd();
+    log_ultis_1.Log.info(`RUNNER_TEMP ${RUNNER_TEMP}`);
+    const variable = (0, exports.createVariable)(inputs, RUNNER_TEMP);
+    await (0, exports.createKeychain)(variable, inputs);
+    // await importCertFromSecret(variable, inputs)
     // await importCertToKeychain(variable, inputs)
     // await apllyProvision(variable)
 }
@@ -26125,13 +26120,9 @@ exports.importCertFromSecret = importCertFromSecret;
 const createKeychain = async (data, inputs) => {
     log_ultis_1.Log.info('Create Keychain');
     const { keychainPath } = data;
-    // await exec.exec(
-    //   `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-    // )
-    // await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-    // await exec.exec(
-    //   `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-    // )
+    await exec.exec(`security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
+    await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`);
+    await exec.exec(`security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`);
 };
 exports.createKeychain = createKeychain;
 const importCertToKeychain = async (data, inputs) => {

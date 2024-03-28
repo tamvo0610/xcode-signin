@@ -22,16 +22,11 @@ interface InputsData {
 }
 
 export async function installCertification(inputs: InputsData) {
-  Log.info('Install certification')
-  const runnerTemp = process.cwd()
-  Log.info(`RUNNER_TEMP ${process.env['RUNNER_TEMP']}`)
-  Log.info(`runnerTemp ${runnerTemp}`)
-  const variable = createVariable(inputs, runnerTemp)
-  Log.info(`CertificatePath ${variable.certificatePath}`)
-  Log.info(`PPPath ${variable.ppPath}`)
-  Log.info(`KeychainPath ${variable.keychainPath}`)
-  await importCertFromSecret(variable, inputs)
-  // await createKeychain(variable, inputs)
+  const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd()
+  Log.info(`RUNNER_TEMP ${RUNNER_TEMP}`)
+  const variable = createVariable(inputs, RUNNER_TEMP)
+  await createKeychain(variable, inputs)
+  // await importCertFromSecret(variable, inputs)
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
 }
@@ -68,13 +63,13 @@ export const createKeychain = async (
 ) => {
   Log.info('Create Keychain')
   const { keychainPath } = data
-  // await exec.exec(
-  //   `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  // )
-  // await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-  // await exec.exec(
-  //   `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
-  // )
+  await exec.exec(
+    `security create-keychain -p ${inputs.keychainPassword} ${keychainPath}`
+  )
+  await exec.exec(`security set-keychain-settings -lut 21600 ${keychainPath}`)
+  await exec.exec(
+    `security unlock-keychain -p ${inputs.keychainPassword} ${keychainPath}`
+  )
 }
 
 export const importCertToKeychain = async (
