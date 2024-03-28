@@ -3,6 +3,7 @@ import * as exec from '@actions/exec'
 import * as core from '@actions/core'
 import * as fs from 'fs'
 import { ExecOptions } from '@actions/exec/lib/interfaces'
+import { exec as execCP } from 'child_process'
 import { Log } from './utils/log.ultis'
 
 interface VariableData {
@@ -52,10 +53,8 @@ export const importCertFromSecret = async (
 ) => {
   const { runnerTemp, certificatePath } = data
   Log.info('Import Certificate From Secret')
-  await exec.exec(
-    `echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`
-  )
-  await exec.exec(
+  execCP(`echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`)
+  execCP(
     `base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`
   )
   // await exec.exec(
