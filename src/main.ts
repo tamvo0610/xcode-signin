@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+import { Inputs } from './constants'
+import { installCertification } from './security'
 
 /**
  * The main function for the action.
@@ -7,20 +8,35 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const inputs = {
+      certificateBase64: core.getInput(Inputs.CERTIFICATE_BASE64),
+      provisionProfileBase64: core.getInput(Inputs.PROVISION_PROFILE_BASE64),
+      p12Password: core.getInput(Inputs.P12_PASSWORD),
+      keychainPassword: core.getInput(Inputs.KEYCHAIN_PASSWORD)
+    }
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    if (!inputs.certificateBase64) {
+      throw new Error('Certificate base64 is required')
+    }
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    if (!inputs.provisionProfileBase64) {
+      throw new Error('Provision profile base64 is required')
+    }
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    if (!inputs.p12Password) {
+      throw new Error('P12 password is required')
+    }
+
+    if (!inputs.keychainPassword) {
+      throw new Error('Keychain password is required')
+    }
+
+    await installCertification(inputs)
   } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    } else {
+      core.setFailed(`Action failed with error ${error}`)
+    }
   }
 }
