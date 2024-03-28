@@ -54,8 +54,9 @@ export const importCertFromSecret = async (
   const { runnerTemp, certificatePath } = data
   Log.info('Import Certificate From Secret')
   const a = await exec.getExecOutput(
-    `echo ${inputs.certificateBase64} >> ${runnerTemp}/certificate.base64`
+    `echo ${'SGVsbG8gd29ybGQ='} >> ${runnerTemp}/certificate.base64`
   )
+
   Log.info(`a: ${a}`)
   const b = await exec.getExecOutput(
     `base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`
