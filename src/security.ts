@@ -60,6 +60,7 @@ export const importCertFromSecret = async (
 ) => {
   const { runnerTemp, certificatePath } = data
   Log.info('Import Certificate From Secret')
+  await exec.exec('chmod 777', [runnerTemp])
   await exec.exec('bash', [
     '-c',
     'echo "SGVsbG8gd29ybGQ=" >> certificate.base64'
