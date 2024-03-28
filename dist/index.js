@@ -26087,7 +26087,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.importCertToKeychain = exports.createKeychain = exports.importCertFromSecret = exports.createVariable = exports.installCertification = void 0;
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const exec = __importStar(__nccwpck_require__(1514));
-const fs = __importStar(__nccwpck_require__(7147));
 const log_ultis_1 = __nccwpck_require__(9857);
 async function installCertification(inputs) {
     log_ultis_1.Log.info('Install certification');
@@ -26099,16 +26098,13 @@ async function installCertification(inputs) {
     log_ultis_1.Log.info(`PPPath ${variable.ppPath}`);
     log_ultis_1.Log.info(`KeychainPath ${variable.keychainPath}`);
     await (0, exports.importCertFromSecret)(variable, inputs);
-    await (0, exports.createKeychain)(variable, inputs);
-    await (0, exports.importCertToKeychain)(variable, inputs);
-    await (0, exports.apllyProvision)(variable);
+    // await createKeychain(variable, inputs)
+    // await importCertToKeychain(variable, inputs)
+    // await apllyProvision(variable)
 }
 exports.installCertification = installCertification;
 const createVariable = (runnerTemp) => {
     const CERTIFICATE_PATH = path_1.default.join(runnerTemp, 'build_certificate.p12');
-    if (!fs.existsSync(CERTIFICATE_PATH)) {
-        fs.mkdirSync(CERTIFICATE_PATH, { recursive: true });
-    }
     const PP_PATH = path_1.default.join(runnerTemp, 'build_pp.mobileprovision');
     const KEYCHAIN_PATH = path_1.default.join(runnerTemp, 'app-signing.keychain-db');
     return {

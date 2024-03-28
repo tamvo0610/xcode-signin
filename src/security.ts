@@ -28,16 +28,13 @@ export async function installCertification(inputs: InputsData) {
   Log.info(`PPPath ${variable.ppPath}`)
   Log.info(`KeychainPath ${variable.keychainPath}`)
   await importCertFromSecret(variable, inputs)
-  await createKeychain(variable, inputs)
-  await importCertToKeychain(variable, inputs)
-  await apllyProvision(variable)
+  // await createKeychain(variable, inputs)
+  // await importCertToKeychain(variable, inputs)
+  // await apllyProvision(variable)
 }
 
 export const createVariable = (runnerTemp: string) => {
   const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
-  if (!fs.existsSync(CERTIFICATE_PATH)) {
-    fs.mkdirSync(CERTIFICATE_PATH, { recursive: true })
-  }
   const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain-db')
   return {
