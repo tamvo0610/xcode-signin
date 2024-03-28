@@ -26916,6 +26916,10 @@ exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
     const { runnerTemp, certificatePath } = data;
     log_ultis_1.Log.info('Import Certificate From Secret');
+    await exec.exec('bash', [
+        '-c',
+        'echo "SGVsbG8gd29ybGQ=" >> certificate.base64'
+    ]);
     const a = await exec.getExecOutput(`echo ${'SGVsbG8gd29ybGQ='} >> ${runnerTemp}/certificate.base64`);
     log_ultis_1.Log.info(`a: ${a}`);
     const b = await exec.getExecOutput(`base64 --decode -i ${runnerTemp}/certificate.base64 -o ${certificatePath}`);
