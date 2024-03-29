@@ -47,7 +47,7 @@ const qdqwdqw = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve('Hello')
-    }, 10000)
+    }, 30000)
   })
 }
 
