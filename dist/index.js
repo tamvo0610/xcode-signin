@@ -24868,9 +24868,9 @@ async function installCertification(inputs) {
     await (0, exports.generateCertificate)(certificatePath, certificateBase64);
     await (0, exports.generateProvision)(provisionProfilePath, provisionProfileBase64);
     await (0, exports.apllyCertificate)(variable, inputs);
+    await (0, exports.apllyCertificate)(variable, inputs);
+    await (0, exports.apllyProvision)(variable);
     await qdqwdqw();
-    // await importCertToKeychain(variable, inputs)
-    // await apllyProvision(variable)
 }
 exports.installCertification = installCertification;
 const qdqwdqw = async () => {
@@ -24920,10 +24920,10 @@ exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
-    await utils.run(`security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`);
     // await utils.run(
-    //   `security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`
+    //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
     // )
+    await utils.run(`security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`);
     await utils.run(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
     await utils.run(`security list-keychain -d user -s ${keychainPath}`);
 };
