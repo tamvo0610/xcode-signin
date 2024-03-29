@@ -37,7 +37,7 @@ export async function installCertification(inputs: InputsData) {
   await unlockKeychain(keychainPath, keychainPassword)
   await generateCertificate(certificatePath, certificateBase64)
   await generateProvision(provisionProfilePath, provisionProfileBase64)
-  await apllyCertificate(variable, inputs)
+  // await apllyCertificate(variable, inputs)
   await qdqwdqw()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
@@ -47,7 +47,7 @@ const qdqwdqw = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve('Hello')
-    }, 30000)
+    }, 40000)
   })
 }
 
