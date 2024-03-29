@@ -26140,12 +26140,12 @@ const unlockKeychain = async (path, password) => {
 };
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
-    await (0, child_process_1.execSync)(`echo -n ${base64} | base64 --decode -o ${path}`);
+    await (0, child_process_1.execFileSync)(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
     log_ultis_1.Log.info('Generate Provision Profile');
-    await (0, child_process_1.execSync)(`echo -n ${base64} | base64 --decode -o ${path}`);
+    await (0, child_process_1.execFileSync)(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
 exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {

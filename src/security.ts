@@ -1,5 +1,5 @@
 import * as exec from '@actions/exec'
-import { execSync as execCP } from 'child_process'
+import { execFileSync as execCP } from 'child_process'
 import path from 'path'
 import { Log } from './utils/log.ultis'
 

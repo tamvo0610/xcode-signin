@@ -1,4 +1,4 @@
-import { exec as execCP } from 'child_process'
+import { exec as execCP, execFileSync } from 'child_process'
 
 export const run = async (str: string): Promise<string> => {
   return new Promise((resolve, reject) => {
