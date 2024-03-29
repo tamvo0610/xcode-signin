@@ -37,7 +37,7 @@ export async function installCertification(inputs: InputsData) {
   await unlockKeychain(keychainPath, keychainPassword)
   await generateCertificate(certificatePath, certificateBase64)
   await generateProvision(provisionProfilePath, provisionProfileBase64)
-  await apllyCertificate(variable, inputs)
+  // await apllyCertificate(variable, inputs)
   await qdqwdqw()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
@@ -66,9 +66,7 @@ export const createVariable = (inputs: InputsData) => {
 
 const createKeychain = async (path: string, password: string) => {
   Log.info('Create Keychain')
-  await utils.run(
-    `security create-keychain -p admin /Users/liberty/Desktop/asad/app-signing.keychain`
-  )
+  await utils.run(`security create-keychain -p ${password} ${path}`)
 }
 
 const setKeychainSettings = async (path: string) => {
