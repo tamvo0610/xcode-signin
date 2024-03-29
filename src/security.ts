@@ -97,6 +97,7 @@ export const apllyCertificate = async (
   data: VariableData,
   inputs: InputsData
 ) => {
+  Log.info('Apply Certificate')
   const { keychainPath, certificatePath } = data
   const { keychainPassword, p12Password } = inputs
   // await utils.run(
@@ -112,6 +113,7 @@ export const apllyCertificate = async (
 }
 
 export const apllyProvision = async (data: VariableData) => {
+  Log.info('Apply Provision Profile')
   const { provisionProfilePath } = data
   await utils.run('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
   await utils.run(

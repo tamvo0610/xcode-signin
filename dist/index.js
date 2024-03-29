@@ -24918,6 +24918,7 @@ const generateProvision = async (path, base64) => {
 };
 exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {
+    log_ultis_1.Log.info('Apply Certificate');
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
     // await utils.run(
@@ -24929,6 +24930,7 @@ const apllyCertificate = async (data, inputs) => {
 };
 exports.apllyCertificate = apllyCertificate;
 const apllyProvision = async (data) => {
+    log_ultis_1.Log.info('Apply Provision Profile');
     const { provisionProfilePath } = data;
     await utils.run('mkdir -p ~/Library/MobileDevice/Provisioning Profiles');
     await utils.run(`cp ${provisionProfilePath} ~/Library/MobileDevice/Provisioning\ Profiles`);
