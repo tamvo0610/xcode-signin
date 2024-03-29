@@ -24914,7 +24914,8 @@ const generateCertificate = async (path, base64) => {
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
     log_ultis_1.Log.info('Generate Provision Profile');
-    await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`);
+    const args = ['-n', base64, '|', 'base64', '--decode', '-o', path];
+    await exec.exec(`echo`, args);
 };
 exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {

@@ -36,7 +36,6 @@ export async function installCertification(inputs: InputsData) {
   await unlockKeychain(keychainPath, keychainPassword)
   await generateCertificate(certificatePath, certificateBase64)
   await generateProvision(provisionProfilePath, provisionProfileBase64)
-  await qdqwdqw()
   // await apllyCertificate()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
@@ -89,7 +88,8 @@ export const generateCertificate = async (path: string, base64: string) => {
 
 export const generateProvision = async (path: string, base64: string) => {
   Log.info('Generate Provision Profile')
-  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
+  const args = ['-n', base64, '|', 'base64', '--decode', '-o', path]
+  await exec.exec(`echo`, args)
 }
 
 export const apllyCertificate = async (
