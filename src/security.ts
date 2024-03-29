@@ -23,7 +23,7 @@ export async function installCertification(inputs: InputsData) {
   await createKeychain(variable, inputs)
   await setKeychainSettings(variable)
   await unlockKeychain(variable, inputs)
-  await importCertFromSecret(variable, inputs)
+  // await importCertFromSecret(variable, inputs)
   await qdqwdqw()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
