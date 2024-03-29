@@ -24932,7 +24932,7 @@ exports.apllyCertificate = apllyCertificate;
 const apllyProvision = async (data) => {
     log_ultis_1.Log.info('Apply Provision Profile');
     const { provisionProfilePath } = data;
-    await utils.run('mkdir -p ~/Library/MobileDevice/Provisioning Profiles');
+    await utils.run(`mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles`);
     await utils.run(`cp ${provisionProfilePath} ~/Library/MobileDevice/Provisioning\ Profiles`);
 };
 exports.apllyProvision = apllyProvision;
