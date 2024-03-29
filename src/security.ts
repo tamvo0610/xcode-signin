@@ -5,9 +5,9 @@ import { Log } from './utils/log.ultis'
 import * as utils from './utils/exec.utils'
 
 interface VariableData {
-  runnerTemp: string
   certificatePath: string
-  ppPath: string
+  provisionProfilePath: string
+  runnerTempPath: string
   keychainPath: string
 }
 
@@ -25,19 +25,20 @@ export async function installCertification(inputs: InputsData) {
     keychainPassword,
     p12Password
   } = inputs
+  const variable = createVariable(inputs)
   const {
     certificatePath,
     provisionProfilePath,
     keychainPath,
     runnerTempPath
-  } = createVariable(inputs)
+  } = variable
   await createKeychain(keychainPath, keychainPassword)
   await setKeychainSettings(keychainPath)
   await unlockKeychain(keychainPath, keychainPassword)
   await generateCertificate(certificatePath, certificateBase64)
   await generateProvision(provisionProfilePath, provisionProfileBase64)
+  await apllyCertificate(variable, inputs)
   await qdqwdqw()
-  // await apllyCertificate()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
 }
@@ -94,19 +95,21 @@ export const apllyCertificate = async (
 ) => {
   const { keychainPath, certificatePath } = data
   const { keychainPassword, p12Password } = inputs
-  await exec.exec(
+  await utils.run(
     `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
   )
-  await exec.exec(
+  await utils.run(
     `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
   )
-  await exec.exec(`security list-keychain -d user -s ${keychainPath}`)
+  await utils.run(`security list-keychain -d user -s ${keychainPath}`)
 }
 
 export const apllyProvision = async (data: VariableData) => {
-  const { ppPath } = data
-  await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
-  await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`)
+  const { provisionProfilePath } = data
+  await utils.run('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
+  await utils.run(
+    `cp ${provisionProfilePath} ~/Library/MobileDevice/Provisioning\ Profiles`
+  )
 }
 
 export const cleanKeychainAndProvision = () => {
