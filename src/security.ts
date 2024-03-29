@@ -17,13 +17,22 @@ interface InputsData {
 }
 
 export async function installCertification(inputs: InputsData) {
-  const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd()
-  Log.info(`RUNNER_TEMP ${RUNNER_TEMP}`)
-  const variable = createVariable(inputs, RUNNER_TEMP)
-  await createKeychain(variable, inputs)
-  await setKeychainSettings(variable)
-  await unlockKeychain(variable, inputs)
-  // await importCertFromSecret(variable, inputs)
+  const {
+    certificateBase64,
+    provisionProfileBase64,
+    keychainPassword,
+    p12Password
+  } = inputs
+  const {
+    certificatePath,
+    provisionProfilePath,
+    keychainPath,
+    runnerTempPath
+  } = createVariable(inputs)
+  await createKeychain(keychainPath, keychainPassword)
+  await setKeychainSettings(keychainPath)
+  await unlockKeychain(keychainPath, keychainPassword)
+  // await importCertFromSecret(variable, inputs)np
   await qdqwdqw()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
@@ -37,16 +46,35 @@ const qdqwdqw = async () => {
   })
 }
 
-export const createVariable = (inputs: InputsData, runnerTemp: string) => {
-  const CERTIFICATE_PATH = path.join(runnerTemp, 'build_certificate.p12')
-  const PP_PATH = path.join(runnerTemp, 'build_pp.mobileprovision')
-  const KEYCHAIN_PATH = path.join(runnerTemp, 'app-signing.keychain')
+export const createVariable = (inputs: InputsData) => {
+  const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd()
+  const CERTIFICATE_PATH = path.join(RUNNER_TEMP, 'build_certificate.p12')
+  const P_PROFILE_PATH = path.join(RUNNER_TEMP, 'build_pp.mobileprovision')
+  const KEYCHAIN_PATH = path.join(RUNNER_TEMP, 'app-signing.keychain')
   return {
-    runnerTemp: runnerTemp,
+    runnerTempPath: RUNNER_TEMP,
     certificatePath: CERTIFICATE_PATH,
-    ppPath: PP_PATH,
+    provisionProfilePath: P_PROFILE_PATH,
     keychainPath: KEYCHAIN_PATH
   }
+}
+
+const createKeychain = async (path: string, password: string) => {
+  Log.info('Create Keychain')
+  const args = ['create-keychain', '-p', password, path]
+  await exec.exec('security', args)
+}
+
+const setKeychainSettings = async (path: string) => {
+  Log.info('Set Keychain Settings')
+  const args = ['set-keychain-settings', '-lut', '21600', path]
+  await exec.exec('security', args)
+}
+
+const unlockKeychain = async (path: string, password: string) => {
+  Log.info('Unlock Keychain')
+  const args = ['unlock-keychain', '-p', password, path]
+  await exec.exec('security', args)
 }
 
 export const importCertFromSecret = async (
@@ -62,32 +90,6 @@ export const importCertFromSecret = async (
   // await exec.exec(
   //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
   // )
-}
-
-export const createKeychain = async (
-  data: VariableData,
-  inputs: InputsData
-) => {
-  const { keychainPath } = data
-  const { keychainPassword } = inputs
-  Log.info('Create Keychain')
-  const args = ['create-keychain', '-p', keychainPassword, keychainPath]
-  await exec.exec('security', args)
-}
-
-const setKeychainSettings = async (data: VariableData) => {
-  const { keychainPath } = data
-  Log.info('Set Keychain Settings')
-  const args = ['set-keychain-settings', '-lut', '21600', keychainPath]
-  await exec.exec('security', args)
-}
-
-const unlockKeychain = async (data: VariableData, inputs: InputsData) => {
-  const { keychainPath } = data
-  const { keychainPassword } = inputs
-  Log.info('Unlock Keychain')
-  const args = ['unlock-keychain', '-p', keychainPassword, keychainPath]
-  await exec.exec('security', args)
 }
 
 export const importCertToKeychain = async (
