@@ -65,33 +65,27 @@ export const createVariable = (inputs: InputsData) => {
 
 const createKeychain = async (path: string, password: string) => {
   Log.info('Create Keychain')
-  const args = ['create-keychain', '-p', password, path]
-  await exec.exec('security', args)
+  await utils.run(`security create-keychain -p ${password} ${path}`)
 }
 
 const setKeychainSettings = async (path: string) => {
   Log.info('Set Keychain Settings')
-  const args = ['set-keychain-settings', '-lut', '21600', path]
-  await exec.exec('security', args)
+  await utils.run(`security set-keychain-settings -lut 21600 ${path}`)
 }
 
 const unlockKeychain = async (path: string, password: string) => {
   Log.info('Unlock Keychain')
-  const args = ['unlock-keychain', '-p', password, path]
-  await exec.exec('security', args)
+  await utils.run(`security unlock-keychain -p ${password} ${path}`)
 }
 
 export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
-  const args = ['-n', base64, '|', 'base64', '--decode', '-o', path]
-  // await exec.exec(`echo`, args)
   await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const generateProvision = async (path: string, base64: string) => {
   Log.info('Generate Provision Profile')
-  const args = ['-n', base64, '|', 'base64', '--decode', '-o', path]
-  await exec.exec(`echo`, args)
+  await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const apllyCertificate = async (

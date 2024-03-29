@@ -26125,30 +26125,24 @@ const createVariable = (inputs) => {
 exports.createVariable = createVariable;
 const createKeychain = async (path, password) => {
     log_ultis_1.Log.info('Create Keychain');
-    const args = ['create-keychain', '-p', password, path];
-    await exec.exec('security', args);
+    await utils.run(`security create-keychain -p ${password} ${path}`);
 };
 const setKeychainSettings = async (path) => {
     log_ultis_1.Log.info('Set Keychain Settings');
-    const args = ['set-keychain-settings', '-lut', '21600', path];
-    await exec.exec('security', args);
+    await utils.run(`security set-keychain-settings -lut 21600 ${path}`);
 };
 const unlockKeychain = async (path, password) => {
     log_ultis_1.Log.info('Unlock Keychain');
-    const args = ['unlock-keychain', '-p', password, path];
-    await exec.exec('security', args);
+    await utils.run(`security unlock-keychain -p ${password} ${path}`);
 };
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
-    const args = ['-n', base64, '|', 'base64', '--decode', '-o', path];
-    // await exec.exec(`echo`, args)
     await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
     log_ultis_1.Log.info('Generate Provision Profile');
-    const args = ['-n', base64, '|', 'base64', '--decode', '-o', path];
-    await exec.exec(`echo`, args);
+    await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
 exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {
