@@ -83,7 +83,8 @@ const unlockKeychain = async (path: string, password: string) => {
 
 export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
-  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
+  const args = ['-n', base64, '|', 'base64', '--decode', '-o', path]
+  await exec.exec(`echo`, args)
 }
 
 export const generateProvision = async (path: string, base64: string) => {

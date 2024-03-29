@@ -24908,7 +24908,8 @@ const unlockKeychain = async (path, password) => {
 };
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
-    await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`);
+    const args = ['-n', base64, '|', 'base64', '--decode', '-o', path];
+    await exec.exec(`echo`, args);
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
