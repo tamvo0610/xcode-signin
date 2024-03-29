@@ -24854,6 +24854,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertificate = exports.generateProvision = exports.generateCertificate = exports.createVariable = exports.installCertification = void 0;
+const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const log_ultis_1 = __nccwpck_require__(9857);
 const utils = __importStar(__nccwpck_require__(4947));
@@ -24906,7 +24907,9 @@ const unlockKeychain = async (path, password) => {
 };
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
-    await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`);
+    const buffer = Buffer.from(base64, 'base64');
+    fs.writeFileSync(path, buffer);
+    // await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {

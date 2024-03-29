@@ -1,4 +1,6 @@
 import * as exec from '@actions/exec'
+import * as tmp from 'tmp'
+import * as fs from 'fs'
 import { execFileSync as execCP } from 'child_process'
 import path from 'path'
 import { Log } from './utils/log.ultis'
@@ -81,7 +83,9 @@ const unlockKeychain = async (path: string, password: string) => {
 
 export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
-  await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
+  const buffer = Buffer.from(base64, 'base64')
+  fs.writeFileSync(path, buffer)
+  // await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const generateProvision = async (path: string, base64: string) => {
