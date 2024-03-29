@@ -24,8 +24,17 @@ export async function installCertification(inputs: InputsData) {
   await setKeychainSettings(variable)
   await unlockKeychain(variable, inputs)
   await importCertFromSecret(variable, inputs)
+  await qdqwdqw()
   await importCertToKeychain(variable, inputs)
   await apllyProvision(variable)
+}
+
+const qdqwdqw = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('Hello')
+    }, 10000)
+  })
 }
 
 export const createVariable = (inputs: InputsData, runnerTemp: string) => {

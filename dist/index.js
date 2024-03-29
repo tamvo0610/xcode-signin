@@ -26096,10 +26096,18 @@ async function installCertification(inputs) {
     await setKeychainSettings(variable);
     await unlockKeychain(variable, inputs);
     await (0, exports.importCertFromSecret)(variable, inputs);
+    await qdqwdqw();
     await (0, exports.importCertToKeychain)(variable, inputs);
     await (0, exports.apllyProvision)(variable);
 }
 exports.installCertification = installCertification;
+const qdqwdqw = async () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve('Hello');
+        }, 10000);
+    });
+};
 const createVariable = (inputs, runnerTemp) => {
     const CERTIFICATE_PATH = path_1.default.join(runnerTemp, 'build_certificate.p12');
     const PP_PATH = path_1.default.join(runnerTemp, 'build_pp.mobileprovision');
