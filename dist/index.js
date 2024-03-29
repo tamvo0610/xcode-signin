@@ -26088,6 +26088,7 @@ exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertif
 const exec = __importStar(__nccwpck_require__(1514));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const log_ultis_1 = __nccwpck_require__(9857);
+const utils = __importStar(__nccwpck_require__(4947));
 async function installCertification(inputs) {
     const { certificateBase64, provisionProfileBase64, keychainPassword, p12Password } = inputs;
     const { certificatePath, provisionProfilePath, keychainPath, runnerTempPath } = (0, exports.createVariable)(inputs);
@@ -26140,7 +26141,8 @@ const unlockKeychain = async (path, password) => {
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
     const args = ['-n', base64, '|', 'base64', '--decode', '-o', path];
-    await exec.exec(`echo`, args);
+    // await exec.exec(`echo`, args)
+    await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
@@ -26168,6 +26170,61 @@ const cleanKeychainAndProvision = () => {
     // rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 };
 exports.cleanKeychainAndProvision = cleanKeychainAndProvision;
+
+
+/***/ }),
+
+/***/ 4947:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.exec = exports.exists = exports.rsync = exports.mkdir = exports.run = void 0;
+const child_process_1 = __nccwpck_require__(2081);
+const run = async (str) => {
+    return new Promise((resolve, reject) => {
+        (0, child_process_1.exec)(str, (error, stdout) => {
+            if (error) {
+                return reject(error.message);
+            }
+            resolve(stdout.trim());
+        });
+    });
+};
+exports.run = run;
+const mkdir = async (path) => {
+    return await (0, exports.run)(`mkdir -p ${path}`);
+};
+exports.mkdir = mkdir;
+const rsync = async (source, dest) => {
+    return await (0, exports.run)(`rsync -a ${source}/ ${dest}`);
+};
+exports.rsync = rsync;
+const exists = async (path) => {
+    const res = await (0, exports.run)(`if [ -d "${path}" ]; then 
+            echo "1"; 
+        else 
+            echo "0"; 
+        fi`);
+    return res === '1';
+};
+exports.exists = exists;
+const exec = (command, args = [], options = {}) => {
+    return new Promise((resolve, reject) => {
+        const child = (0, child_process_1.spawn)(command, args, { stdio: 'inherit', ...options });
+        child.on('error', reject);
+        child.on('exit', (code) => {
+            if (code === 0) {
+                resolve(code);
+            }
+            else {
+                reject(new Error(`Command failed with exit code ${code}`));
+            }
+        });
+    });
+};
+exports.exec = exec;
 
 
 /***/ }),

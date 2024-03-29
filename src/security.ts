@@ -2,7 +2,7 @@ import * as exec from '@actions/exec'
 import { execFileSync as execCP } from 'child_process'
 import path from 'path'
 import { Log } from './utils/log.ultis'
-// import * as exec from './utils/exec.utils'
+import * as utils from './utils/exec.utils'
 
 interface VariableData {
   runnerTemp: string
@@ -84,7 +84,8 @@ const unlockKeychain = async (path: string, password: string) => {
 export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
   const args = ['-n', base64, '|', 'base64', '--decode', '-o', path]
-  await exec.exec(`echo`, args)
+  // await exec.exec(`echo`, args)
+  await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const generateProvision = async (path: string, base64: string) => {
