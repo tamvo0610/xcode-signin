@@ -25,8 +25,8 @@ export async function installCertification(inputs: InputsData) {
   await unlockKeychain(variable, inputs)
   await importCertFromSecret(variable, inputs)
   await qdqwdqw()
-  await importCertToKeychain(variable, inputs)
-  await apllyProvision(variable)
+  // await importCertToKeychain(variable, inputs)
+  // await apllyProvision(variable)
 }
 
 const qdqwdqw = async () => {
@@ -53,14 +53,15 @@ export const importCertFromSecret = async (
   data: VariableData,
   inputs: InputsData
 ) => {
+  const { certificateBase64 } = inputs
   const { runnerTemp, certificatePath } = data
   Log.info('Import Certificate From Secret')
   await exec.exec(
-    `echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`
+    `echo -n ${certificateBase64} | base64 --decode -o ${certificatePath}`
   )
-  await exec.exec(
-    `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-  )
+  // await exec.exec(
+  //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
+  // )
 }
 
 export const createKeychain = async (

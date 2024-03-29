@@ -26097,8 +26097,8 @@ async function installCertification(inputs) {
     await unlockKeychain(variable, inputs);
     await (0, exports.importCertFromSecret)(variable, inputs);
     await qdqwdqw();
-    await (0, exports.importCertToKeychain)(variable, inputs);
-    await (0, exports.apllyProvision)(variable);
+    // await importCertToKeychain(variable, inputs)
+    // await apllyProvision(variable)
 }
 exports.installCertification = installCertification;
 const qdqwdqw = async () => {
@@ -26123,8 +26123,10 @@ exports.createVariable = createVariable;
 const importCertFromSecret = async (data, inputs) => {
     const { runnerTemp, certificatePath } = data;
     log_ultis_1.Log.info('Import Certificate From Secret');
-    await exec.exec(`echo -n ${inputs.certificateBase64} | base64 --decode -o ${data.certificatePath}`);
-    await exec.exec(`echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`);
+    await exec.exec(`echo -n ${inputs.certificateBase64} | base64 --decode -o ${certificatePath}`);
+    // await exec.exec(
+    //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
+    // )
 };
 exports.importCertFromSecret = importCertFromSecret;
 const createKeychain = async (data, inputs) => {
