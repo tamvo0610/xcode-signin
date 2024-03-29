@@ -26095,9 +26095,9 @@ async function installCertification(inputs) {
     await (0, exports.createKeychain)(variable, inputs);
     await setKeychainSettings(variable);
     await unlockKeychain(variable, inputs);
-    // await importCertFromSecret(variable, inputs)
-    // await importCertToKeychain(variable, inputs)
-    // await apllyProvision(variable)
+    await (0, exports.importCertFromSecret)(variable, inputs);
+    await (0, exports.importCertToKeychain)(variable, inputs);
+    await (0, exports.apllyProvision)(variable);
 }
 exports.installCertification = installCertification;
 const createVariable = (inputs, runnerTemp) => {
@@ -26143,19 +26143,15 @@ const unlockKeychain = async (data, inputs) => {
 const importCertToKeychain = async (data, inputs) => {
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
-    // await exec.exec(
-    //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
-    // )
-    // await exec.exec(
-    //   `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
-    // )
-    // await exec.exec(`security list-keychain -d user -s ${keychainPath}`)
+    await exec.exec(`security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`);
+    await exec.exec(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
+    await exec.exec(`security list-keychain -d user -s ${keychainPath}`);
 };
 exports.importCertToKeychain = importCertToKeychain;
 const apllyProvision = async (data) => {
     const { ppPath } = data;
-    // await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles')
-    // await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`)
+    await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles');
+    await exec.exec(`cp ${ppPath} ~/Library/MobileDevice/Provisioning\ Profiles`);
 };
 exports.apllyProvision = apllyProvision;
 const cleanKeychainAndProvision = () => {
