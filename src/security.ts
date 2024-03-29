@@ -85,12 +85,12 @@ export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
   const buffer = Buffer.from(base64, 'base64')
   fs.writeFileSync(path, buffer)
-  // await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const generateProvision = async (path: string, base64: string) => {
   Log.info('Generate Provision Profile')
-  await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
+  const buffer = Buffer.from(base64, 'base64')
+  fs.writeFileSync(path, buffer)
 }
 
 export const apllyCertificate = async (
@@ -99,12 +99,12 @@ export const apllyCertificate = async (
 ) => {
   const { keychainPath, certificatePath } = data
   const { keychainPassword, p12Password } = inputs
-  // await utils.run(
-  //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
-  // )
   await utils.run(
-    `security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`
+    `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
   )
+  // await utils.run(
+  //   `security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`
+  // )
   await utils.run(
     `security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`
   )

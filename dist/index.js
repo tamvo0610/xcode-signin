@@ -24909,21 +24909,21 @@ const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
     const buffer = Buffer.from(base64, 'base64');
     fs.writeFileSync(path, buffer);
-    // await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`)
 };
 exports.generateCertificate = generateCertificate;
 const generateProvision = async (path, base64) => {
     log_ultis_1.Log.info('Generate Provision Profile');
-    await utils.run(`echo -n ${base64} | base64 --decode -o ${path}`);
+    const buffer = Buffer.from(base64, 'base64');
+    fs.writeFileSync(path, buffer);
 };
 exports.generateProvision = generateProvision;
 const apllyCertificate = async (data, inputs) => {
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
+    await utils.run(`security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`);
     // await utils.run(
-    //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
+    //   `security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`
     // )
-    await utils.run(`security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`);
     await utils.run(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
     await utils.run(`security list-keychain -d user -s ${keychainPath}`);
 };
