@@ -1,4 +1,4 @@
-import { exec as execCP, execFileSync } from 'child_process'
+import { exec as execCP, execFileSync, spawn } from 'child_process'
 
 export const run = async (str: string): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -28,4 +28,24 @@ export const exists = async (path: string): Promise<boolean> => {
         fi`
   )
   return res === '1'
+}
+
+export const exec = (
+  command: string,
+  args: string[] = [],
+  options: any = {}
+): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, { stdio: 'inherit', ...options })
+
+    child.on('error', reject)
+
+    child.on('exit', (code: number) => {
+      if (code === 0) {
+        resolve(code)
+      } else {
+        reject(new Error(`Command failed with exit code ${code}`))
+      }
+    })
+  })
 }
