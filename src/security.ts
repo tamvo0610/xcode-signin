@@ -1,4 +1,5 @@
 import * as exec from '@actions/exec'
+import { execSync as execCP } from 'child_process'
 import path from 'path'
 import { Log } from './utils/log.ultis'
 
@@ -81,12 +82,12 @@ const unlockKeychain = async (path: string, password: string) => {
 
 export const generateCertificate = async (path: string, base64: string) => {
   Log.info('Generate Certificate')
-  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
+  await execCP(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const generateProvision = async (path: string, base64: string) => {
   Log.info('Generate Provision Profile')
-  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
+  await execCP(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
 export const apllyCertificate = async (
