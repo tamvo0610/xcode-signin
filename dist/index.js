@@ -26096,6 +26096,7 @@ async function installCertification(inputs) {
     await unlockKeychain(keychainPath, keychainPassword);
     await (0, exports.generateCertificate)(certificatePath, certificateBase64);
     await (0, exports.generateProvision)(provisionProfilePath, provisionProfileBase64);
+    await qdqwdqw();
     // await apllyCertificate()
     // await importCertToKeychain(variable, inputs)
     // await apllyProvision(variable)

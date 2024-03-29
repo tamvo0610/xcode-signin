@@ -36,6 +36,7 @@ export async function installCertification(inputs: InputsData) {
   await unlockKeychain(keychainPath, keychainPassword)
   await generateCertificate(certificatePath, certificateBase64)
   await generateProvision(provisionProfilePath, provisionProfileBase64)
+  await qdqwdqw()
   // await apllyCertificate()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
