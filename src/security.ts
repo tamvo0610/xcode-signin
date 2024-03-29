@@ -1,8 +1,8 @@
-// import * as exec from '@actions/exec'
+import * as exec from '@actions/exec'
 import { execFileSync as execCP } from 'child_process'
 import path from 'path'
 import { Log } from './utils/log.ultis'
-import * as exec from './utils/exec.utils'
+// import * as exec from './utils/exec.utils'
 
 interface VariableData {
   runnerTemp: string
