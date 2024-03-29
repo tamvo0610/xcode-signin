@@ -26084,7 +26084,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.cleanKeychainAndProvision = exports.apllyProvision = exports.importCertToKeychain = exports.importCertFromSecret = exports.createVariable = exports.installCertification = void 0;
+exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertificate = exports.generateProvision = exports.generateCertificate = exports.createVariable = exports.installCertification = void 0;
 const exec = __importStar(__nccwpck_require__(1514));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const log_ultis_1 = __nccwpck_require__(9857);
@@ -26094,8 +26094,10 @@ async function installCertification(inputs) {
     await createKeychain(keychainPath, keychainPassword);
     await setKeychainSettings(keychainPath);
     await unlockKeychain(keychainPath, keychainPassword);
-    // await importCertFromSecret(variable, inputs)np
+    await (0, exports.generateCertificate)(certificatePath, certificateBase64);
+    await (0, exports.generateProvision)(provisionProfilePath, provisionProfileBase64);
     await qdqwdqw();
+    // await apllyCertificate()
     // await importCertToKeychain(variable, inputs)
     // await apllyProvision(variable)
 }
@@ -26135,24 +26137,24 @@ const unlockKeychain = async (path, password) => {
     const args = ['unlock-keychain', '-p', password, path];
     await exec.exec('security', args);
 };
-const importCertFromSecret = async (data, inputs) => {
-    const { certificateBase64 } = inputs;
-    const { runnerTemp, certificatePath } = data;
-    log_ultis_1.Log.info('Import Certificate From Secret');
-    await exec.exec(`echo -n ${certificateBase64} | base64 --decode -o ${certificatePath}`);
-    // await exec.exec(
-    //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-    // )
+const generateCertificate = async (path, base64) => {
+    log_ultis_1.Log.info('Generate Certificate');
+    await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`);
 };
-exports.importCertFromSecret = importCertFromSecret;
-const importCertToKeychain = async (data, inputs) => {
+exports.generateCertificate = generateCertificate;
+const generateProvision = async (path, base64) => {
+    log_ultis_1.Log.info('Generate Provision Profile');
+    await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`);
+};
+exports.generateProvision = generateProvision;
+const apllyCertificate = async (data, inputs) => {
     const { keychainPath, certificatePath } = data;
     const { keychainPassword, p12Password } = inputs;
     await exec.exec(`security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`);
     await exec.exec(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
     await exec.exec(`security list-keychain -d user -s ${keychainPath}`);
 };
-exports.importCertToKeychain = importCertToKeychain;
+exports.apllyCertificate = apllyCertificate;
 const apllyProvision = async (data) => {
     const { ppPath } = data;
     await exec.exec('mkdir -p ~/Library/MobileDevice/Provisioning Profiles');

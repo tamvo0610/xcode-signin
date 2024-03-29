@@ -32,8 +32,10 @@ export async function installCertification(inputs: InputsData) {
   await createKeychain(keychainPath, keychainPassword)
   await setKeychainSettings(keychainPath)
   await unlockKeychain(keychainPath, keychainPassword)
-  // await importCertFromSecret(variable, inputs)np
+  await generateCertificate(certificatePath, certificateBase64)
+  await generateProvision(provisionProfilePath, provisionProfileBase64)
   await qdqwdqw()
+  // await apllyCertificate()
   // await importCertToKeychain(variable, inputs)
   // await apllyProvision(variable)
 }
@@ -77,22 +79,17 @@ const unlockKeychain = async (path: string, password: string) => {
   await exec.exec('security', args)
 }
 
-export const importCertFromSecret = async (
-  data: VariableData,
-  inputs: InputsData
-) => {
-  const { certificateBase64 } = inputs
-  const { runnerTemp, certificatePath } = data
-  Log.info('Import Certificate From Secret')
-  await exec.exec(
-    `echo -n ${certificateBase64} | base64 --decode -o ${certificatePath}`
-  )
-  // await exec.exec(
-  //   `echo -n ${inputs.provisionProfileBase64} | base64 --decode -o ${data.ppPath}`
-  // )
+export const generateCertificate = async (path: string, base64: string) => {
+  Log.info('Generate Certificate')
+  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
 }
 
-export const importCertToKeychain = async (
+export const generateProvision = async (path: string, base64: string) => {
+  Log.info('Generate Provision Profile')
+  await exec.exec(`echo -n ${base64} | base64 --decode -o ${path}`)
+}
+
+export const apllyCertificate = async (
   data: VariableData,
   inputs: InputsData
 ) => {
