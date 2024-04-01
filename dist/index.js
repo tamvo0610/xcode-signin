@@ -24934,7 +24934,9 @@ const qdqwdqw = async () => {
 const generateKeychain = async () => {
     const path = core.getState(constants_1.States.KEYCHAIN_PATH);
     const password = core.getState(constants_1.States.KEYCHAIN_PASSWORD);
-    await utils.run(`security create-keychain -p ${path} ${password}`);
+    log_utils_1.Log.info(`path: ${path}`);
+    log_utils_1.Log.info(`password: ${password}`);
+    await utils.run(`security create-keychain -p ${password} ${path}`);
     await utils.run(`security set-keychain-settings -lut 21600 ${path}`);
     await utils.run(`security unlock-keychain -p ${password} ${path}`);
 };

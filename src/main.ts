@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import { Inputs, States } from './constants'
 import { installCertification } from './security'
 import { getInputs, getVariables } from './utils/action.utils'
 

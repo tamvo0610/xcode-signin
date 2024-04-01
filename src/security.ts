@@ -4,20 +4,6 @@ import * as utils from './utils/exec.utils'
 import { Log } from './utils/log.utils'
 import { States } from './constants'
 
-interface VariableData {
-  certificatePath: string
-  provisionProfilePath: string
-  runnerTempPath: string
-  keychainPath: string
-}
-
-interface InputsData {
-  certificateBase64: string
-  provisionProfileBase64: string
-  p12Password: string
-  keychainPassword: string
-}
-
 export async function installCertification() {
   Log.info('Create Keychain')
   await generateKeychain()
@@ -51,7 +37,9 @@ const qdqwdqw = async () => {
 const generateKeychain = async () => {
   const path = core.getState(States.KEYCHAIN_PATH)
   const password = core.getState(States.KEYCHAIN_PASSWORD)
-  await utils.run(`security create-keychain -p ${path} ${password}`)
+  Log.info(`path: ${path}`)
+  Log.info(`password: ${password}`)
+  await utils.run(`security create-keychain -p ${password} ${path}`)
   await utils.run(`security set-keychain-settings -lut 21600 ${path}`)
   await utils.run(`security unlock-keychain -p ${password} ${path}`)
 }
