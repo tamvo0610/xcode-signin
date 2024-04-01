@@ -1,7 +1,8 @@
 import * as fs from 'fs'
-import path from 'path'
+import * as core from '@actions/core'
 import * as utils from './utils/exec.utils'
-import { Log } from './utils/log.ultis'
+import { Log } from './utils/log.utils'
+import { States } from './constants'
 
 interface VariableData {
   certificatePath: string
@@ -17,33 +18,25 @@ interface InputsData {
   keychainPassword: string
 }
 
-export async function installCertification({
-  certificateBase64,
-  provisionProfileBase64,
-  keychainPassword,
-  p12Password
-}: InputsData) {
-  const {
-    certificatePath,
-    provisionProfilePath,
-    keychainPath,
-    runnerTempPath
-  } = createVariable()
+export async function installCertification() {
   Log.info('Create Keychain')
-  await utils.run(
-    `security create-keychain -p ${keychainPassword} ${keychainPath}`
-  )
-  await utils.run(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-  await utils.run(`security unlock-keychain -p ${keychainPassword} ${path}`)
-  await generateCertificate(certificatePath, certificateBase64)
-  await generateProvision(provisionProfilePath, provisionProfileBase64)
-  await apllyCertificate(
-    certificatePath,
-    p12Password,
-    keychainPath,
-    keychainPassword
-  )
-  await apllyProvision(provisionProfilePath)
+  await generateKeychain()
+  // await utils.run(
+  //   `security create-keychain -p ${keychainPassword} ${keychainPath}`
+  // )
+  // await utils.run(`security set-keychain-settings -lut 21600 ${keychainPath}`)
+  // await utils.run(
+  //   `security unlock-keychain -p ${keychainPassword} ${keychainPath}`
+  // )
+  // await generateCertificate(certificatePath, certificateBase64)
+  // await generateProvision(provisionProfilePath, provisionProfileBase64)
+  // await apllyCertificate(
+  //   certificatePath,
+  //   p12Password,
+  //   keychainPath,
+  //   keychainPassword
+  // )
+  // await apllyProvision(provisionProfilePath)
   await qdqwdqw()
 }
 
@@ -55,17 +48,12 @@ const qdqwdqw = async () => {
   })
 }
 
-export const createVariable = () => {
-  const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd()
-  const CERTIFICATE_PATH = path.join(RUNNER_TEMP, 'build_certificate.p12')
-  const P_PROFILE_PATH = path.join(RUNNER_TEMP, 'build_pp.mobileprovision')
-  const KEYCHAIN_PATH = path.join(RUNNER_TEMP, 'app-signing.keychain-db')
-  return {
-    runnerTempPath: RUNNER_TEMP,
-    certificatePath: CERTIFICATE_PATH,
-    provisionProfilePath: P_PROFILE_PATH,
-    keychainPath: KEYCHAIN_PATH
-  }
+const generateKeychain = async () => {
+  const path = core.getState(States.KEYCHAIN_PATH)
+  const password = core.getState(States.KEYCHAIN_PASSWORD)
+  await utils.run(`security create-keychain -p ${path} ${password}`)
+  await utils.run(`security set-keychain-settings -lut 21600 ${path}`)
+  await utils.run(`security unlock-keychain -p ${password} ${path}`)
 }
 
 export const generateCertificate = async (path: string, base64: string) => {
