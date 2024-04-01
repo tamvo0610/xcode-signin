@@ -1,6 +1,5 @@
 name: 'Xcode Sigin'
-description:
-  'Installing an Apple certificate on macOS runners for Xcode development'
+description: 'Import Apple Code-signing Certificates and Provision Profile'
 author: 'Tâm Võ'
 
 branding:

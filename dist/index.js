@@ -24711,7 +24711,7 @@ exports["default"] = _default;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Inputs = void 0;
+exports.States = exports.Inputs = void 0;
 var Inputs;
 (function (Inputs) {
     Inputs["CERTIFICATE_BASE64"] = "BUILD_CERTIFICATE_BASE64";
@@ -24719,6 +24719,17 @@ var Inputs;
     Inputs["P12_PASSWORD"] = "P12_PASSWORD";
     Inputs["KEYCHAIN_PASSWORD"] = "KEYCHAIN_PASSWORD";
 })(Inputs || (exports.Inputs = Inputs = {}));
+var States;
+(function (States) {
+    States["CERTIFICATE_BASE64"] = "CERTIFICATE_BASE64";
+    States["CERTIFICATE_PATH"] = "CERTIFICATE_PATH";
+    States["PROVISION_PROFILE_BASE64"] = "PROVISION_PROFILE_BASE64";
+    States["PROVISION_PROFILE_PATH"] = "PROVISION_PROFILE_PATH";
+    States["KEYCHAIN_PASSWORD"] = "KEYCHAIN_PASSWORD";
+    States["KEYCHAIN_PATH"] = "KEYCHAIN_PATH";
+    States["RUNNER_TEMP_PATH"] = "RUNNER_TEMP_PATH";
+    States["P12_PASSWORD"] = "P12_PASSWORD";
+})(States || (exports.States = States = {}));
 
 
 /***/ }),
@@ -24743,7 +24754,62 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PROVISION_PROFILE_PATH = void 0;
 __exportStar(__nccwpck_require__(5319), exports);
+exports.PROVISION_PROFILE_PATH = '~/Library/MobileDevice/Provisioning\\ Profiles';
+
+
+/***/ }),
+
+/***/ 6144:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(2186));
+const main_1 = __nccwpck_require__(399);
+const constants_1 = __nccwpck_require__(6526);
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+(0, main_1.run)();
+const init = () => {
+    getInputs();
+};
+const getInputs = () => {
+    const certificateBase64 = core.getInput(constants_1.Inputs.CERTIFICATE_BASE64);
+    const provisionProfileBase64 = core.getInput(constants_1.Inputs.PROVISION_PROFILE_BASE64);
+    const p12Password = core.getInput(constants_1.Inputs.P12_PASSWORD);
+    const keychainPassword = core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD);
+    core.saveState(constants_1.States.CERTIFICATE_BASE64, certificateBase64);
+    core.saveState(constants_1.States.PROVISION_PROFILE_BASE64, provisionProfileBase64);
+    core.saveState(constants_1.States.P12_PASSWORD, p12Password);
+    core.saveState(constants_1.States.KEYCHAIN_PASSWORD, keychainPassword);
+};
+const getVarialbe = () => { };
+init();
 
 
 /***/ }),
@@ -24781,31 +24847,34 @@ exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const constants_1 = __nccwpck_require__(6526);
 const security_1 = __nccwpck_require__(8589);
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 async function run() {
     try {
-        const inputs = {
-            certificateBase64: core.getInput(constants_1.Inputs.CERTIFICATE_BASE64),
-            provisionProfileBase64: core.getInput(constants_1.Inputs.PROVISION_PROFILE_BASE64),
-            p12Password: core.getInput(constants_1.Inputs.P12_PASSWORD),
-            keychainPassword: core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD)
-        };
-        if (!inputs.certificateBase64) {
+        const certificateBase64 = core.getInput(constants_1.Inputs.CERTIFICATE_BASE64);
+        const provisionProfileBase64 = core.getInput(constants_1.Inputs.PROVISION_PROFILE_BASE64);
+        const p12Password = core.getInput(constants_1.Inputs.P12_PASSWORD);
+        const keychainPassword = core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD);
+        // Validate Certificate Input
+        if (!certificateBase64) {
             throw new Error('Certificate base64 is required');
         }
-        if (!inputs.provisionProfileBase64) {
+        // Validate Provision Profile Input
+        if (!provisionProfileBase64) {
             throw new Error('Provision profile base64 is required');
         }
-        if (!inputs.p12Password) {
+        // Validate Certificate Password
+        if (!p12Password) {
             throw new Error('P12 password is required');
         }
-        if (!inputs.keychainPassword) {
+        // Validate Keychain Password
+        if (!keychainPassword) {
             throw new Error('Keychain password is required');
         }
-        await (0, security_1.installCertification)(inputs);
+        await (0, security_1.installCertification)({
+            certificateBase64,
+            provisionProfileBase64,
+            p12Password,
+            keychainPassword
+        });
     }
     catch (error) {
         if (error instanceof Error) {
@@ -24856,20 +24925,18 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertificate = exports.generateProvision = exports.generateCertificate = exports.createVariable = exports.installCertification = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const log_ultis_1 = __nccwpck_require__(9857);
 const utils = __importStar(__nccwpck_require__(4947));
-async function installCertification(inputs) {
-    const { certificateBase64, provisionProfileBase64, keychainPassword, p12Password } = inputs;
-    const variable = (0, exports.createVariable)(inputs);
-    const { certificatePath, provisionProfilePath, keychainPath, runnerTempPath } = variable;
-    await createKeychain(keychainPath, keychainPassword);
-    await setKeychainSettings(keychainPath);
-    await unlockKeychain(keychainPath, keychainPassword);
+const log_ultis_1 = __nccwpck_require__(9857);
+async function installCertification({ certificateBase64, provisionProfileBase64, keychainPassword, p12Password }) {
+    const { certificatePath, provisionProfilePath, keychainPath, runnerTempPath } = (0, exports.createVariable)();
+    log_ultis_1.Log.info('Create Keychain');
+    await utils.run(`security create-keychain -p ${keychainPassword} ${keychainPath}`);
+    await utils.run(`security set-keychain-settings -lut 21600 ${keychainPath}`);
+    await utils.run(`security unlock-keychain -p ${keychainPassword} ${path_1.default}`);
     await (0, exports.generateCertificate)(certificatePath, certificateBase64);
     await (0, exports.generateProvision)(provisionProfilePath, provisionProfileBase64);
-    await (0, exports.apllyCertificate)(variable, inputs);
-    await (0, exports.apllyCertificate)(variable, inputs);
-    await (0, exports.apllyProvision)(variable);
+    await (0, exports.apllyCertificate)(certificatePath, p12Password, keychainPath, keychainPassword);
+    await (0, exports.apllyProvision)(provisionProfilePath);
     await qdqwdqw();
 }
 exports.installCertification = installCertification;
@@ -24880,7 +24947,7 @@ const qdqwdqw = async () => {
         }, 40000);
     });
 };
-const createVariable = (inputs) => {
+const createVariable = () => {
     const RUNNER_TEMP = process.env['RUNNER_TEMP'] || process.cwd();
     const CERTIFICATE_PATH = path_1.default.join(RUNNER_TEMP, 'build_certificate.p12');
     const P_PROFILE_PATH = path_1.default.join(RUNNER_TEMP, 'build_pp.mobileprovision');
@@ -24893,18 +24960,6 @@ const createVariable = (inputs) => {
     };
 };
 exports.createVariable = createVariable;
-const createKeychain = async (path, password) => {
-    log_ultis_1.Log.info('Create Keychain');
-    await utils.run(`security create-keychain -p ${password} ${path}`);
-};
-const setKeychainSettings = async (path) => {
-    log_ultis_1.Log.info('Set Keychain Settings');
-    await utils.run(`security set-keychain-settings -lut 21600 ${path}`);
-};
-const unlockKeychain = async (path, password) => {
-    log_ultis_1.Log.info('Unlock Keychain');
-    await utils.run(`security unlock-keychain -p ${password} ${path}`);
-};
 const generateCertificate = async (path, base64) => {
     log_ultis_1.Log.info('Generate Certificate');
     const buffer = Buffer.from(base64, 'base64');
@@ -24917,23 +24972,17 @@ const generateProvision = async (path, base64) => {
     fs.writeFileSync(path, buffer);
 };
 exports.generateProvision = generateProvision;
-const apllyCertificate = async (data, inputs) => {
+const apllyCertificate = async (certificatePath, p12Password, keychainPath, keychainPassword) => {
     log_ultis_1.Log.info('Apply Certificate');
-    const { keychainPath, certificatePath } = data;
-    const { keychainPassword, p12Password } = inputs;
-    // await utils.run(
-    //   `security import ${certificatePath} -P ${p12Password} -A -t cert -f pkcs12 -k ${keychainPath}`
-    // )
     await utils.run(`security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`);
     await utils.run(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
     await utils.run(`security list-keychain -d user -s ${keychainPath}`);
 };
 exports.apllyCertificate = apllyCertificate;
-const apllyProvision = async (data) => {
+const apllyProvision = async (path) => {
     log_ultis_1.Log.info('Apply Provision Profile');
-    const { provisionProfilePath } = data;
     await utils.run(`mkdir -p ~/Library/MobileDevice/Provisioning\\ Profiles`);
-    await utils.run(`cp ${provisionProfilePath} ~/Library/MobileDevice/Provisioning\\ Profiles`);
+    await utils.run(`cp ${path} ~/Library/MobileDevice/Provisioning\\ Profiles`);
 };
 exports.apllyProvision = apllyProvision;
 const cleanKeychainAndProvision = () => {
@@ -26948,23 +26997,13 @@ module.exports = parseParams
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-/**
- * The entrypoint for the action.
- */
-const main_1 = __nccwpck_require__(399);
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(0, main_1.run)();
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
