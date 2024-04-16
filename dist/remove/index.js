@@ -24793,10 +24793,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeyChain = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const state_utils_1 = __nccwpck_require__(1657);
+const log_utils_1 = __nccwpck_require__(6980);
 async function cleanKeyChain() {
     try {
-        state_utils_1.StateSingleton.getInstance().initVariable();
-        state_utils_1.StateSingleton.getInstance().cleanCertificate();
+        log_utils_1.Log.info('Clean Certificate');
+        await state_utils_1.StateSingleton.getInstance().cleanCertificate();
     }
     catch (error) {
         if (error instanceof Error) {
@@ -24805,6 +24806,7 @@ async function cleanKeyChain() {
         else {
             core.setFailed(`Action failed with error ${error}`);
         }
+        process.exit(core.ExitCode.Failure);
     }
 }
 exports.cleanKeyChain = cleanKeyChain;
