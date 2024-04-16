@@ -24851,6 +24851,9 @@ async function run() {
     try {
         (0, action_utils_1.getInputs)();
         (0, action_utils_1.getVariables)();
+        core.saveState('TEST', '312312');
+        const value = core.getState('TEST');
+        console.log('value', value);
         await (0, security_1.installCertification)();
     }
     catch (error) {
@@ -24860,6 +24863,7 @@ async function run() {
         else {
             core.setFailed(`Action failed with error ${error}`);
         }
+        process.exit(core.ExitCode.Failure);
     }
 }
 exports.run = run;

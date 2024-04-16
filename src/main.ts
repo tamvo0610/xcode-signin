@@ -6,6 +6,9 @@ export async function run(): Promise<void> {
   try {
     getInputs()
     getVariables()
+    core.saveState('TEST', '312312')
+    const value = core.getState('TEST')
+    console.log('value', value)
     await installCertification()
   } catch (error) {
     if (error instanceof Error) {
@@ -13,5 +16,6 @@ export async function run(): Promise<void> {
     } else {
       core.setFailed(`Action failed with error ${error}`)
     }
+    process.exit(core.ExitCode.Failure)
   }
 }

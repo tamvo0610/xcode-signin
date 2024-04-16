@@ -15,3 +15,5 @@ export enum States {
   RUNNER_TEMP_PATH = 'RUNNER_TEMP_PATH',
   P12_PASSWORD = 'P12_PASSWORD'
 }
+
+export type StateMap = keyof typeof States
