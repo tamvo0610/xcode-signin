@@ -27,5 +27,4 @@ outputs:
 runs:
   using: node20
   main: dist/index.js
-  # post: dist/save/index.js
-  # post-if: success()
+  post: dist/remove/index.js

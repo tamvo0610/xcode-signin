@@ -1,4 +1,4 @@
-require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
+/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 7351:
@@ -24761,59 +24761,6 @@ exports.PROVISION_PROFILE_PATH = '~/Library/MobileDevice/Provisioning\\ Profiles
 
 /***/ }),
 
-/***/ 6144:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__nccwpck_require__(2186));
-const main_1 = __nccwpck_require__(399);
-const constants_1 = __nccwpck_require__(6526);
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-(0, main_1.run)();
-const init = () => {
-    getInputs();
-};
-const getInputs = () => {
-    const certificateBase64 = core.getInput(constants_1.Inputs.CERTIFICATE_BASE64);
-    const provisionProfileBase64 = core.getInput(constants_1.Inputs.PROVISION_PROFILE_BASE64);
-    const p12Password = core.getInput(constants_1.Inputs.P12_PASSWORD);
-    const keychainPassword = core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD);
-    core.saveState(constants_1.States.CERTIFICATE_BASE64, certificateBase64);
-    core.saveState(constants_1.States.PROVISION_PROFILE_BASE64, provisionProfileBase64);
-    core.saveState(constants_1.States.P12_PASSWORD, p12Password);
-    core.saveState(constants_1.States.KEYCHAIN_PASSWORD, keychainPassword);
-};
-const getVarialbe = () => { };
-init();
-
-
-/***/ }),
-
 /***/ 399:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -24864,6 +24811,7 @@ async function run() {
     }
 }
 exports.run = run;
+run();
 
 
 /***/ }),
@@ -24899,28 +24847,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertificate = exports.generateProvision = exports.generateCertificate = exports.installCertification = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
+const core = __importStar(__nccwpck_require__(2186));
 const utils = __importStar(__nccwpck_require__(4947));
 const log_utils_1 = __nccwpck_require__(6980);
 const constants_1 = __nccwpck_require__(6526);
 async function installCertification() {
-    log_utils_1.Log.info('Create Keychain');
     await generateKeychain();
-    // await utils.run(
-    //   `security create-keychain -p ${keychainPassword} ${keychainPath}`
-    // )
-    // await utils.run(`security set-keychain-settings -lut 21600 ${keychainPath}`)
-    // await utils.run(
-    //   `security unlock-keychain -p ${keychainPassword} ${keychainPath}`
-    // )
-    // await generateCertificate(certificatePath, certificateBase64)
-    // await generateProvision(provisionProfilePath, provisionProfileBase64)
-    // await apllyCertificate(
-    //   certificatePath,
-    //   p12Password,
-    //   keychainPath,
-    //   keychainPassword
-    // )
-    // await apllyProvision(provisionProfilePath)
+    await (0, exports.generateCertificate)();
+    await (0, exports.generateProvision)();
+    await (0, exports.apllyCertificate)();
+    await (0, exports.apllyProvision)();
     await qdqwdqw();
 }
 exports.installCertification = installCertification;
@@ -24932,42 +24868,51 @@ const qdqwdqw = async () => {
     });
 };
 const generateKeychain = async () => {
+    log_utils_1.Log.info('Generate Keychain');
     const path = process.env[constants_1.States.KEYCHAIN_PATH];
-    const password = process.env[constants_1.States.KEYCHAIN_PASSWORD];
-    log_utils_1.Log.info(`path: ${path}`);
-    log_utils_1.Log.info(`password: ${password}`);
+    const password = core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD);
     await utils.run(`security create-keychain -p ${password} ${path}`);
     await utils.run(`security set-keychain-settings -lut 21600 ${path}`);
     await utils.run(`security unlock-keychain -p ${password} ${path}`);
 };
-const generateCertificate = async (path, base64) => {
+const generateCertificate = async () => {
     log_utils_1.Log.info('Generate Certificate');
+    const path = process.env[constants_1.States.CERTIFICATE_PATH] || '';
+    const base64 = core.getInput(constants_1.Inputs.CERTIFICATE_BASE64);
     const buffer = Buffer.from(base64, 'base64');
     fs.writeFileSync(path, buffer);
 };
 exports.generateCertificate = generateCertificate;
-const generateProvision = async (path, base64) => {
+const generateProvision = async () => {
     log_utils_1.Log.info('Generate Provision Profile');
+    const path = process.env[constants_1.States.PROVISION_PROFILE_PATH] || '';
+    const base64 = core.getInput(constants_1.Inputs.PROVISION_PROFILE_BASE64);
     const buffer = Buffer.from(base64, 'base64');
     fs.writeFileSync(path, buffer);
 };
 exports.generateProvision = generateProvision;
-const apllyCertificate = async (certificatePath, p12Password, keychainPath, keychainPassword) => {
+const apllyCertificate = async () => {
     log_utils_1.Log.info('Apply Certificate');
+    const certificatePath = process.env[constants_1.States.CERTIFICATE_PATH] || '';
+    const p12Password = core.getInput(constants_1.Inputs.P12_PASSWORD);
+    const keychainPath = process.env[constants_1.States.KEYCHAIN_PATH] || '';
+    const keychainPassword = core.getInput(constants_1.Inputs.KEYCHAIN_PASSWORD);
     await utils.run(`security import ${certificatePath} -k ${keychainPath} -P ${p12Password} -A -t cert -f pkcs12`);
     await utils.run(`security set-key-partition-list -S apple-tool:,apple: -k ${keychainPassword} ${keychainPath}`);
     await utils.run(`security list-keychain -d user -s ${keychainPath}`);
 };
 exports.apllyCertificate = apllyCertificate;
-const apllyProvision = async (path) => {
+const apllyProvision = async () => {
     log_utils_1.Log.info('Apply Provision Profile');
+    const path = process.env[constants_1.States.PROVISION_PROFILE_PATH] || '';
     await utils.run(`mkdir -p ~/Library/MobileDevice/Provisioning\\ Profiles`);
     await utils.run(`cp ${path} ~/Library/MobileDevice/Provisioning\\ Profiles`);
 };
 exports.apllyProvision = apllyProvision;
-const cleanKeychainAndProvision = () => {
-    // security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-    // rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+const cleanKeychainAndProvision = async () => {
+    const keychainPath = process.env[constants_1.States.KEYCHAIN_PATH] || '';
+    await utils.run(`security delete-keychain ${keychainPath}`);
+    await utils.run(`rm ~/Library/MobileDevice/Provisioning\\ Profiles/build_pp.mobileprovision`);
 };
 exports.cleanKeychainAndProvision = cleanKeychainAndProvision;
 
@@ -27059,9 +27004,8 @@ module.exports = parseParams
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(399);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=index.js.map

@@ -16,3 +16,5 @@ export async function run(): Promise<void> {
     process.exit(core.ExitCode.Failure)
   }
 }
+
+run()
