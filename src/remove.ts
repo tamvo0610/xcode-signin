@@ -1,9 +1,10 @@
 import * as core from '@actions/core'
-import { cleanKeychainAndProvision } from './security'
+import { StateSingleton } from './utils/state.utils'
 
 export async function cleanKeyChain() {
   try {
-    await cleanKeychainAndProvision()
+    StateSingleton.getInstance().initVariable()
+    StateSingleton.getInstance().cleanCertificate()
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)

@@ -1,12 +1,27 @@
 import * as core from '@actions/core'
-import { installCertification } from './security'
-import { getInputs, getVariables } from './utils/action.utils'
+import { StateSingleton } from './utils/state.utils'
 
 export async function run(): Promise<void> {
   try {
-    getInputs()
-    getVariables()
-    await installCertification()
+    const {
+      CERTIFICATE_BASE64,
+      P_PROFILE_BASE64,
+      P12_PASSWORD,
+      KEYCHAIN_PASSWORD
+    } = StateSingleton.getInstance().initVariable()
+    if (!CERTIFICATE_BASE64) {
+      throw new Error('Certificate base64 is required')
+    }
+    if (!P_PROFILE_BASE64) {
+      throw new Error('Provision profile base64 is required')
+    }
+    if (!P12_PASSWORD) {
+      throw new Error('P12 password is required')
+    }
+    if (!KEYCHAIN_PASSWORD) {
+      throw new Error('Keychain password is required')
+    }
+    await StateSingleton.getInstance().installCertificate()
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)
