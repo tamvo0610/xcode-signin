@@ -23,10 +23,10 @@ export const getInputs = () => {
   if (!keychainPassword) {
     throw new Error('Keychain password is required')
   }
-  core.saveState(States.CERTIFICATE_BASE64, certificateBase64)
-  core.saveState(States.PROVISION_PROFILE_BASE64, provisionProfileBase64)
-  core.saveState(States.P12_PASSWORD, p12Password)
-  core.saveState(States.KEYCHAIN_PASSWORD, keychainPassword)
+  core.exportVariable(States.CERTIFICATE_BASE64, certificateBase64)
+  core.exportVariable(States.PROVISION_PROFILE_BASE64, provisionProfileBase64)
+  core.exportVariable(States.P12_PASSWORD, p12Password)
+  core.exportVariable(States.KEYCHAIN_PASSWORD, keychainPassword)
 }
 
 export const getVariables = () => {
@@ -34,8 +34,8 @@ export const getVariables = () => {
   const CERTIFICATE_PATH = path.join(RUNNER_TEMP, 'build_certificate.p12')
   const P_PROFILE_PATH = path.join(RUNNER_TEMP, 'build_pp.mobileprovision')
   const KEYCHAIN_PATH = path.join(RUNNER_TEMP, 'app-signing.keychain-db')
-  core.saveState(States.RUNNER_TEMP_PATH, RUNNER_TEMP)
-  core.saveState(States.CERTIFICATE_PATH, CERTIFICATE_PATH)
-  core.saveState(States.PROVISION_PROFILE_PATH, P_PROFILE_PATH)
-  core.saveState(States.KEYCHAIN_PATH, KEYCHAIN_PATH)
+  core.exportVariable(States.RUNNER_TEMP_PATH, RUNNER_TEMP)
+  core.exportVariable(States.CERTIFICATE_PATH, CERTIFICATE_PATH)
+  core.exportVariable(States.PROVISION_PROFILE_PATH, P_PROFILE_PATH)
+  core.exportVariable(States.KEYCHAIN_PATH, KEYCHAIN_PATH)
 }

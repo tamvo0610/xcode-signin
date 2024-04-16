@@ -24851,9 +24851,6 @@ async function run() {
     try {
         (0, action_utils_1.getInputs)();
         (0, action_utils_1.getVariables)();
-        core.saveState('TEST', '312312');
-        const value = core.getState('TEST');
-        console.log('value', value);
         await (0, security_1.installCertification)();
     }
     catch (error) {
@@ -25035,10 +25032,10 @@ const getInputs = () => {
     if (!keychainPassword) {
         throw new Error('Keychain password is required');
     }
-    core.saveState(constants_1.States.CERTIFICATE_BASE64, certificateBase64);
-    core.saveState(constants_1.States.PROVISION_PROFILE_BASE64, provisionProfileBase64);
-    core.saveState(constants_1.States.P12_PASSWORD, p12Password);
-    core.saveState(constants_1.States.KEYCHAIN_PASSWORD, keychainPassword);
+    core.exportVariable(constants_1.States.CERTIFICATE_BASE64, certificateBase64);
+    core.exportVariable(constants_1.States.PROVISION_PROFILE_BASE64, provisionProfileBase64);
+    core.exportVariable(constants_1.States.P12_PASSWORD, p12Password);
+    core.exportVariable(constants_1.States.KEYCHAIN_PASSWORD, keychainPassword);
 };
 exports.getInputs = getInputs;
 const getVariables = () => {
@@ -25046,10 +25043,10 @@ const getVariables = () => {
     const CERTIFICATE_PATH = path_1.default.join(RUNNER_TEMP, 'build_certificate.p12');
     const P_PROFILE_PATH = path_1.default.join(RUNNER_TEMP, 'build_pp.mobileprovision');
     const KEYCHAIN_PATH = path_1.default.join(RUNNER_TEMP, 'app-signing.keychain-db');
-    core.saveState(constants_1.States.RUNNER_TEMP_PATH, RUNNER_TEMP);
-    core.saveState(constants_1.States.CERTIFICATE_PATH, CERTIFICATE_PATH);
-    core.saveState(constants_1.States.PROVISION_PROFILE_PATH, P_PROFILE_PATH);
-    core.saveState(constants_1.States.KEYCHAIN_PATH, KEYCHAIN_PATH);
+    core.exportVariable(constants_1.States.RUNNER_TEMP_PATH, RUNNER_TEMP);
+    core.exportVariable(constants_1.States.CERTIFICATE_PATH, CERTIFICATE_PATH);
+    core.exportVariable(constants_1.States.PROVISION_PROFILE_PATH, P_PROFILE_PATH);
+    core.exportVariable(constants_1.States.KEYCHAIN_PATH, KEYCHAIN_PATH);
 };
 exports.getVariables = getVariables;
 
