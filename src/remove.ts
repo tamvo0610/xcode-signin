@@ -5,7 +5,7 @@ import { Log } from './utils/log.utils'
 export async function cleanKeyChain() {
   try {
     Log.info('Clean Certificate')
-    await StateSingleton.getInstance().cleanCertificate()
+    // await StateSingleton.getInstance().cleanCertificate()
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(error.message)
