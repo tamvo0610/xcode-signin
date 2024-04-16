@@ -35,8 +35,8 @@ const qdqwdqw = async () => {
 }
 
 const generateKeychain = async () => {
-  const path = core.getState(States.KEYCHAIN_PATH)
-  const password = core.getState(States.KEYCHAIN_PASSWORD)
+  const path = process.env[States.KEYCHAIN_PATH]
+  const password = process.env[States.KEYCHAIN_PASSWORD]
   Log.info(`path: ${path}`)
   Log.info(`password: ${password}`)
   await utils.run(`security create-keychain -p ${password} ${path}`)

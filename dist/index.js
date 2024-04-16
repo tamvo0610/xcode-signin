@@ -24899,7 +24899,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.cleanKeychainAndProvision = exports.apllyProvision = exports.apllyCertificate = exports.generateProvision = exports.generateCertificate = exports.installCertification = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
-const core = __importStar(__nccwpck_require__(2186));
 const utils = __importStar(__nccwpck_require__(4947));
 const log_utils_1 = __nccwpck_require__(6980);
 const constants_1 = __nccwpck_require__(6526);
@@ -24933,8 +24932,8 @@ const qdqwdqw = async () => {
     });
 };
 const generateKeychain = async () => {
-    const path = core.getState(constants_1.States.KEYCHAIN_PATH);
-    const password = core.getState(constants_1.States.KEYCHAIN_PASSWORD);
+    const path = process.env[constants_1.States.KEYCHAIN_PATH];
+    const password = process.env[constants_1.States.KEYCHAIN_PASSWORD];
     log_utils_1.Log.info(`path: ${path}`);
     log_utils_1.Log.info(`password: ${password}`);
     await utils.run(`security create-keychain -p ${password} ${path}`);
